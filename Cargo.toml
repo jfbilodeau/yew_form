@@ -1,0 +1,12 @@
+[package]
+name = "yew_form"
+version = "0.1.0"
+authors = ["J-F Bilodeau <jfbilodeau@chronogears.com>"]
+edition = "2018"
+
+# See more keys and their definitions at https://doc.rust-lang.org/cargo/reference/manifest.html
+
+[dependencies]
+yew = "0.11.0"
+validator = "0.10.0"
+validator_derive = "0.10.0"
