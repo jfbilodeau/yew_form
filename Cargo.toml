@@ -5,7 +5,7 @@ authors = ["J-F Bilodeau <jfbilodeau@chronogears.com>"]
 edition = "2018"
 description = "Bringing MVC to Yew! A set of Yew component to map and validate a model to a HTML form"
 license = "MIT"
-repository = "https://github.com/jfbilodeau/yew-form"
+repository = "https://github.com/jfbilodeau/yew_form"
 
 # See more keys and their definitions at https://doc.rust-lang.org/cargo/reference/manifest.html
 
