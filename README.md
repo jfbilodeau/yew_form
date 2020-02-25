@@ -4,6 +4,8 @@ Bringing MVC to Yew! A set of Yew component to map and validate a model to a HTM
 
 **Early Work in Progress**
 
+[Live demo](http://chronogears.com/yew-form/)
+
 Supports:
 - 2-way Binding to struct (with nested structs)
 - Validation ([using Keats Validator](https://github.com/Keats/validator))

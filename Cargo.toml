@@ -6,6 +6,8 @@ edition = "2018"
 description = "Bringing MVC to Yew! A set of Yew component to map and validate a model to a HTML form"
 license = "MIT"
 repository = "https://github.com/jfbilodeau/yew_form"
+readme = "README.md"
+categories = [ "web-programming" ]
 
 # See more keys and their definitions at https://doc.rust-lang.org/cargo/reference/manifest.html
 
