@@ -1,5 +1,4 @@
 use validator::{Validate, ValidationErrors, ValidationErrorsKind};
-use yew::services::ConsoleService;
 use crate::{FormField, FormFieldType};
 
 pub struct FormState<T: Validate + PartialEq> {
@@ -119,7 +118,10 @@ impl<T: Validate + PartialEq> FormState<T> {
     }
 
     pub(crate) fn validate(&mut self) -> bool {
-        self.fields.iter_mut().for_each(|f| f.valid = true);
+        self.fields.iter_mut().for_each(|f| {
+            f.valid = true;
+            f.dirty = true;
+        });
 
         let result = self.model.validate();
 

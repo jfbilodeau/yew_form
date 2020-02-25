@@ -2,7 +2,6 @@ use yew::{Component, ComponentLink, Html, html, Properties, InputData, Callback,
 
 use crate::form::{Form};
 use crate::{Model, FormField};
-use yew::services::ConsoleService;
 
 pub enum FieldMessage {
     OnInput(InputData)
@@ -92,18 +91,17 @@ impl<T: Model> Component for Field<T> {
     fn update(&mut self, msg: Self::Message) -> ShouldRender {
         match msg {
             FieldMessage::OnInput(input_data) => {
-                let mut state = self.form.state_mut();
+                let state = self.form.state_mut();
                 state.set_field(&self.field_name, &input_data.value);
                 state.validate();
 
-                ConsoleService::new().log(&input_data.value);
                 self.oninput.emit(input_data);
                 true
             }
         }
     }
 
-    fn change(&mut self, props: Self::Properties) -> ShouldRender {
+    fn change(&mut self, _props: Self::Properties) -> ShouldRender {
         true
     }
 

@@ -7,6 +7,9 @@ edition = "2018"
 # See more keys and their definitions at https://doc.rust-lang.org/cargo/reference/manifest.html
 
 [dependencies]
-yew = "0.11.0"
+lazy_static = "1.4.0"
+regex = "1"
+stdweb = "0.4.20"
 validator = "0.10.0"
 validator_derive = "0.10.0"
+yew = "0.11.0"

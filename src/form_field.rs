@@ -32,10 +32,10 @@ impl<T: Validate + PartialEq> FormField<T> {
 #[macro_export]
 macro_rules! text_field {
     ( $f:ident ) => (
-        FormField::new(stringify!($f), FormFieldType::String(|f| &f.$f, |f, v| f.$f = v.to_string()))
+        yew_form::FormField::new(stringify!($f), yew_form::FormFieldType::String(|f| &f.$f, |f, v| f.$f = v.to_string()))
     );
     ( $f1:ident . $f2:ident ) => (
-        FormField::new(&format!("{}.{}", stringify!($f1), stringify!($f2)), FormFieldType::String(|f| &f.$f1.$f2, |f, v| f.$f1.$f2 = v.to_string()))
+        yew_form::FormField::new(&format!("{}.{}", stringify!($f1), stringify!($f2)), yew_form::FormFieldType::String(|f| &f.$f1.$f2, |f, v| f.$f1.$f2 = v.to_string()))
     );
 }
 
