@@ -3,6 +3,9 @@ name = "yew_form"
 version = "0.1.0"
 authors = ["J-F Bilodeau <jfbilodeau@chronogears.com>"]
 edition = "2018"
+description = "Bringing MVC to Yew! A set of Yew component to map and validate a model to a HTML form"
+license = "MIT,Apache"
+repository = "https://github.com/jfbilodeau/yew-form"
 
 # See more keys and their definitions at https://doc.rust-lang.org/cargo/reference/manifest.html
 

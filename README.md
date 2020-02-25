@@ -1,5 +1,8 @@
+[![License:MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT) [![License:Apache](https://img.shields.io/badge/License-Apache-yellow.svg)](https://opensource.org/licenses/Apache-2.0)
 # Yew Form
-Yew components to simplify form handling. (arly work in progress)
+Bringing MVC to Yew! A set of Yew component to map and validate a model to a HTML form.
+
+**Early Work in Progress**
 
 Supports:
 - 2-way Binding to struct (with nested structs)
