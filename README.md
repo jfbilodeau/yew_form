@@ -1,10 +1,9 @@
 # Yew Form
-Yew components to simplify form handling.
+Yew components to simplify form handling. (arly work in progress)
 
 Supports:
 - 2-way Binding to struct (with nested structs)
 - Validation ([using Keats Validator](https://github.com/Keats/validator))
-
 
 ## Example
 Consider the following model:
@@ -36,9 +35,8 @@ The struct can be bound to a Yew form using the following definition:
 
 ```rust
 struct App {
-    link: ComponentLink<Self>,
     form: Form<Registration>,
-    submitted: bool,
+    ...
 }
 ```
 
@@ -59,7 +57,6 @@ fn create(_props: Self::Properties, link: ComponentLink<Self>) -> Self {
     };
 
     Self {
-        link,
         form: Form::new(model, vec![
             // TODO: Derive those automatically
             text_field!(first_name),
@@ -69,7 +66,7 @@ fn create(_props: Self::Properties, link: ComponentLink<Self>) -> Self {
             text_field!(address.province),
             text_field!(address.country),
         ]),
-        submitted: false,
+        ...
     }
     ...
 ```
@@ -97,3 +94,4 @@ Todo/Wish List:
 - [ ] Make Yew update the view when `Field` is updated
 - [ ] Need to add additional HTML attribute to `Field`
 - [ ] Remove hard-coded Bootstrap styles
+- [ ] Add support for additional types
