@@ -18,11 +18,11 @@ lazy_static! {
 // TODO: Remove Clone requirement
 #[derive(Validate, PartialEq, Clone)]
 struct Address {
-    #[validate(length(min = 1))]
+    #[validate(length(min = 1, message="Street is required"))]
     street: String,
-    #[validate(length(min = 1))]
+    #[validate(length(min = 1, message="City name is required"))]
     city: String,
-    #[validate(regex = "PROVINCE_RE")]
+    #[validate(regex(path="PROVINCE_RE", message="Enter 2 digit province code"))]
     province: String,
     postal_code: String,
     country: String,
@@ -30,9 +30,9 @@ struct Address {
 
 #[derive(Validate, PartialEq, Clone)]
 struct Registration {
-    #[validate(length(min = 1))]
+    #[validate(length(min = 1, message="First name is required"))]
     first_name: String,
-    #[validate(length(min = 1, message="Enter 2 digit province code"))]
+    #[validate(length(min = 1, message="Last name is required"))]
     last_name: String,
     #[validate]
     address: Address,
