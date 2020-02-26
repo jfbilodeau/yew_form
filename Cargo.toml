@@ -1,6 +1,6 @@
 [package]
 name = "yew_form"
-version = "0.1.1"
+version = "0.1.2"
 authors = ["J-F Bilodeau <jfbilodeau@chronogears.com>"]
 edition = "2018"
 description = "Bringing MVC to Yew! A set of Yew component to map and validate a model to a HTML form"
@@ -17,4 +17,4 @@ regex = "1"
 stdweb = "0.4.20"
 validator = "0.10.0"
 validator_derive = "0.10.0"
-yew = "0.11.0"
+yew = "0.12.0"

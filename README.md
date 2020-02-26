@@ -7,7 +7,7 @@ Bringing MVC to Yew! A set of Yew component to map and validate a model to a HTM
 [Live demo](http://chronogears.com/yew-form/)
 
 Supports:
-- 2-way Binding to struct (with nested structs)
+- 2-way Binding to struct (with support for nested structs)
 - Validation ([using Keats Validator](https://github.com/Keats/validator))
 
 ## Example
@@ -95,8 +95,16 @@ if self.form.validate() {
 Todo/Wish List:
 - [ ] Remove clone requirement from model
 - [ ] Add `derive` for model to remove need for `vec!` of fields
-- [ ] Make `oninput` optional
+- [X] Make `oninput` optional
 - [ ] Make Yew update the view when `Field` is updated
 - [ ] Need to add additional HTML attribute to `Field`
 - [ ] Remove hard-coded Bootstrap styles
 - [ ] Add support for additional types
+
+## Change Log
+
+### 0.1.2
+- Added CheckBox
+
+### 0.1.1
+- Make `Field::oninput` optional

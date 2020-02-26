@@ -39,4 +39,14 @@ macro_rules! text_field {
     );
 }
 
+#[macro_export]
+macro_rules! bool_field {
+    ( $f:ident ) => (
+        yew_form::FormField::new(stringify!($f), yew_form::FormFieldType::Bool(|f| f.$f, |f, v| f.$f = v))
+    );
+    ( $f1:ident . $f2:ident ) => (
+        yew_form::FormField::new(&format!("{}.{}", stringify!($f1), stringify!($f2)), yew_form::FormFieldType::Bool(|f| f.$f1.$f2, |f, v| f.$f1.$f2 = v))
+    );
+}
+
 pub use text_field;

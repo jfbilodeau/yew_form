@@ -4,12 +4,12 @@ extern crate lazy_static;
 #[macro_use]
 extern crate validator_derive;
 
+use regex::Regex;
 use stdweb::web::event::IEvent;
 use validator::Validate;
-use yew::{Callback, ClickEvent, Component, ComponentLink, Html, html, InputData};
+use yew::{ClickEvent, Component, ComponentLink, Html, html, InputData};
 
-use yew_form::{Field, Form, Model, text_field};
-use regex::Regex;
+use yew_form::{bool_field, CheckBox, Field, Form, Model, text_field};
 
 lazy_static! {
     static ref PROVINCE_RE: Regex = Regex::new("^[A-Z]{2}$").unwrap();
@@ -36,6 +36,7 @@ struct Registration {
     last_name: String,
     #[validate]
     address: Address,
+    accept_terms: bool,
 }
 
 // TODO: derive model
@@ -68,6 +69,7 @@ impl Component for App {
                 postal_code: String::from("K2P 0A4"),
                 country: String::new(),
             },
+            accept_terms: false,
         };
 
         Self {
@@ -80,6 +82,7 @@ impl Component for App {
                 text_field!(address.city),
                 text_field!(address.province),
                 text_field!(address.country),
+                bool_field!(accept_terms),
             ]),
             submitted: false,
         }
@@ -150,6 +153,16 @@ impl Component for App {
                         </div>
                     </div>
                     <div class="form-group">
+                        <label for="accept_terms">{"Accept Terms and Conditions: "}</label>
+                        <CheckBox<Registration>
+                            field_name="accept_terms"
+                            form=&self.form
+                        />
+                        <div class="invalid-feedback">
+                          {&self.form.field_message("accept_terms")}
+                        </div>
+                    </div>
+                    <div class="form-group">
                         <button type="button" onclick=self.link.callback(|e: ClickEvent| {e.prevent_default(); AppMessage::Submit})>{"Submit"}</button>
                     </div>
                 </form>
@@ -161,6 +174,7 @@ impl Component for App {
                     <p>{"City: "}{&self.form.model().address.city}</p>
                     <p>{"Province: "}{&self.form.model().address.province}</p>
                     <p>{"Country: "}{&self.form.model().address.country}</p>
+                    <p>{"Accepted Terms: "}{self.form.model().accept_terms}</p>
                 </div>
             </div>
         }

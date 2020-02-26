@@ -7,15 +7,21 @@ pub enum FieldMessage {
     OnInput(InputData)
 }
 
+fn default_text() -> String {
+    String::from("text")
+}
+
 #[derive(Properties, PartialEq, Clone)]
 pub struct FieldProperties<T: Model> {
+    #[props(default = "default_text")]
     pub input_type: String,
     #[props(required)]
     pub field_name: String,
     #[props(required)]
     pub form: Form<T>,
+    #[props(default = String::new)]
     pub placeholder: String,
-    #[props(required)]
+    #[props(default = "Callback::noop")]
     pub oninput: Callback<InputData>,
 }
 

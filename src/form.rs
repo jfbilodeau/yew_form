@@ -46,7 +46,7 @@ impl<T: Validate + PartialEq> Form<T> {
         self.state.field_valid(field_name)
     }
 
-    pub fn field(&self, field_name: &str) -> &FormField<T> {
+    pub(crate) fn field(&self, field_name: &str) -> &FormField<T> {
         &self.state.field(field_name)
     }
 

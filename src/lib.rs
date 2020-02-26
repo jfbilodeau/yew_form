@@ -1,9 +1,11 @@
 #![feature(get_mut_unchecked)]
 
+pub use checkbox::CheckBox;
 pub use field::Field;
 pub use form::{Form, Model};
 pub use form_field::{FormField, FormFieldType};
 
+pub mod checkbox;
 pub mod form_field;
 pub mod field;
 pub mod form;
