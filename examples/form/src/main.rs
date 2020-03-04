@@ -212,8 +212,7 @@ fn main() {
 #[cfg(test)]
 mod tests {
     use crate::yew_form::Model;
-    use validator::{Validate, ValidationError};
-    use crate::Address;
+    use crate::{Address, Registration};
 
     #[test]
     fn test_address() {
@@ -233,9 +232,37 @@ mod tests {
 
         assert_eq!(address.value("street"), String::from(address.street.clone()));
 
-        address.set_value("street", "street_o");
+        assert!(address.set_value("street", "street_o").is_ok());
 
         assert_eq!(address.value("street"), String::from("street_o"));
+    }
+
+    #[test]
+    fn test_composite() {
+        let mut registration = Registration {
+            first_name: "first_name_i".to_string(),
+            last_name: "last_name_i".to_string(),
+            address: Address {
+                street: "street_i".to_string(),
+                city: "city_i".to_string(),
+                province: "prov_i".to_string(),
+                postal_code: "po_i".to_string(),
+                country: "country_i".to_string()
+            },
+            accept_terms: false
+        };
+
+        let mut fields = vec![];
+        registration.fields(&mut fields);
+
+        assert_eq!(fields.len(), 8);
+        assert!(fields.contains(&String::from("address.street")));
+
+        assert_eq!(registration.value("address.street"), String::from(registration.address.street.clone()));
+
+        registration.set_value("address.street", "street_o");
+
+        assert_eq!(registration.address.value("street"), String::from("street_o"));
     }
 
     #[test]
