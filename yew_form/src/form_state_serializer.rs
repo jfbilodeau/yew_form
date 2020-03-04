@@ -4,7 +4,7 @@ use serde::ser::{SerializeSeq, SerializeTuple, SerializeTupleStruct, SerializeTu
 use std::result::Result;
 use crate::form_state::form_state_serde_error::ModelSerializerError;
 
-pub struct ModelSerializer {
+pub(crate) struct ModelSerializer {
     field_names: Vec<String>,
     prefix: String,
     prefix_stack: Vec<String>,
@@ -15,7 +15,7 @@ impl ModelSerializer {
     pub fn new() -> Self {
         Self {
             field_names: vec![],
-            prefix: "".to_string(),
+            prefix: String::new(),
             prefix_stack: vec![],
             entered_root: false,
         }

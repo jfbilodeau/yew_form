@@ -1,7 +1,8 @@
 use yew::{Component, ComponentLink, Html, html, Properties, InputData, Callback, ShouldRender};
 
 use crate::form::{Form};
-use crate::{Model, FormField};
+use crate::{Model};
+use crate::form_field::FormField;
 
 pub enum FieldMessage {
     OnInput(InputData)
@@ -35,7 +36,7 @@ pub struct Field<T: Model> {
 }
 
 impl<T: Model> Field<T> {
-    fn field(&self) -> &FormField<T> {
+    fn field(&self) -> &FormField {
         self.form.field(&self.field_name)
     }
 
@@ -98,7 +99,7 @@ impl<T: Model> Component for Field<T> {
         match msg {
             FieldMessage::OnInput(input_data) => {
                 let state = self.form.state_mut();
-                state.set_field(&self.field_name, &input_data.value);
+                state.set_field_value(&self.field_name, &input_data.value);
                 state.validate();
 
                 self.oninput.emit(input_data);

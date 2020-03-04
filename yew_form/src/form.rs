@@ -1,22 +1,19 @@
 use std::rc::Rc;
 
-use validator::Validate;
-
 use crate::form_state::FormState;
-use crate::FormField;
-
-pub trait Model: Validate + PartialEq + Clone + 'static {}
+use crate::{Model};
+use crate::form_field::FormField;
 
 //pub type Form<T> = Rc<FormState<T>>;
 #[derive(Clone)]
-pub struct Form<T: Validate + PartialEq> {
+pub struct Form<T: Model> {
     pub state: Rc<FormState<T>>
 }
 
-impl<T: Validate + PartialEq> Form<T> {
-    pub fn new(model: T, fields: Vec<FormField<T>>) -> Form<T> {
+impl<T: Model> Form<T> {
+    pub fn new(model: T) -> Form<T> {
         Form {
-            state: Rc::new(FormState::new(model, fields)),
+            state: Rc::new(FormState::new(model)),
         }
     }
 
@@ -46,7 +43,7 @@ impl<T: Validate + PartialEq> Form<T> {
         self.state.field_valid(field_name)
     }
 
-    pub(crate) fn field(&self, field_name: &str) -> &FormField<T> {
+    pub(crate) fn field(&self, field_name: &str) -> &FormField {
         &self.state.field(field_name)
     }
 
@@ -55,7 +52,7 @@ impl<T: Validate + PartialEq> Form<T> {
     }
 
     pub fn set_field(&mut self, field_name: &str, field_value: &str) {
-        self.state_mut().set_field(field_name, field_value);
+        self.state_mut().set_field_value(field_name, field_value);
     }
 
     pub fn model(&self) -> &T {
@@ -67,7 +64,7 @@ impl<T: Validate + PartialEq> Form<T> {
     }
 }
 
-impl<T: Validate + PartialEq> PartialEq for Form<T> {
+impl<T: Model> PartialEq for Form<T> {
     fn eq(&self, other: &Self) -> bool {
         Rc::ptr_eq(&self.state, &other.state)
             ||

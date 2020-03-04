@@ -2,14 +2,15 @@
 
 pub use checkbox::CheckBox;
 pub use field::Field;
-pub use form::{Form, Model};
-pub use form_field::{FormField, FormFieldType};
+pub use form::{Form};
+pub use model::Model;
 
 pub mod checkbox;
 pub mod form_field;
 pub mod field;
 pub mod form;
 pub mod form_state;
+pub mod model;
 
 #[cfg(test)]
 mod tests {

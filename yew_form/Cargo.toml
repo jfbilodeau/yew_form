@@ -12,8 +12,6 @@ categories = [ "web-programming" ]
 # See more keys and their definitions at https://doc.rust-lang.org/cargo/reference/manifest.html
 
 [dependencies]
-lazy_static = "1.4.0"
-regex = "1"
 stdweb = "0.4.20"
 validator = "0.10.0"
 validator_derive = "0.10.0"

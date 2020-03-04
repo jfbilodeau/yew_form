@@ -93,15 +93,20 @@ if self.form.validate() {
 ```
 
 Todo/Wish List:
+- [ ] Add documentation
 - [ ] Remove clone requirement from model
 - [ ] Add `derive` for model to remove need for `vec!` of fields
 - [X] Make `oninput` optional
 - [ ] Make Yew update the view when `Field` is updated
 - [ ] Need to add additional HTML attribute to `Field`
 - [ ] Remove hard-coded Bootstrap styles
-- [ ] Add support for additional types
+- [ ] Add support for additional types such as `i32`
+- [ ] Support `Vec<T>`
 
 ## Change Log
+
+### 0.1.3
+- Added `#[derive(Model)]`
 
 ### 0.1.2
 - Added CheckBox

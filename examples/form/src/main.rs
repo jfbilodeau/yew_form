@@ -3,20 +3,31 @@
 extern crate lazy_static;
 #[macro_use]
 extern crate validator_derive;
+extern crate yew_form;
+#[macro_use]
+extern crate yew_form_derive;
 
 use regex::Regex;
 use stdweb::web::event::IEvent;
-use validator::Validate;
+use validator::{Validate, ValidationError};
 use yew::{ClickEvent, Component, ComponentLink, Html, html, InputData};
 
-use yew_form::{bool_field, CheckBox, Field, Form, Model, text_field};
+use yew_form::{CheckBox, Field, Form};
 
 lazy_static! {
     static ref PROVINCE_RE: Regex = Regex::new("^[A-Z]{2}$").unwrap();
 }
 
+fn must_be_true(value: &bool) -> Result<(), ValidationError> {
+    if value == &true {
+        Ok(())
+    } else {
+        Err(ValidationError::new("Must accept terms before continuing"))
+    }
+}
+
 // TODO: Remove Clone requirement
-#[derive(Validate, PartialEq, Clone)]
+#[derive(Model, Validate, PartialEq, Clone)]
 struct Address {
     #[validate(length(min = 1, message="Street is required"))]
     street: String,
@@ -28,7 +39,7 @@ struct Address {
     country: String,
 }
 
-#[derive(Validate, PartialEq, Clone)]
+#[derive(Model, Validate, PartialEq, Clone)]
 struct Registration {
     #[validate(length(min = 1, message="First name is required"))]
     first_name: String,
@@ -36,11 +47,32 @@ struct Registration {
     last_name: String,
     #[validate]
     address: Address,
+    #[validate(custom = "must_be_true")]
     accept_terms: bool,
 }
 
-// TODO: derive model
-impl Model for Registration {}
+// impl Model for Registration {
+//     fn fields(&self, fields: &mut Vec<String>) {
+//         fields.push(String::from("first_name"));
+//         fields.push(String::from("last_name"));
+//         fields.push(String::from("address.street"));
+//         fields.push(String::from("accept_terms"));
+//     }
+//
+//     fn set_value(&mut self, field_path: &str, value: &str) {
+//         unimplemented!()
+//     }
+//
+//     fn value(&self, field_path: &str) -> String {
+//         match field_path {
+//             "first_name" => self.first_name.to_string(),
+//             "last_name" => self.last_name.to_string(),
+//             "address.street" => self.address.get_value("street"),
+//             "accept_terms" => self.accept_terms.to_string(),
+//             _ => panic!(format!("Field {} does not exist", field_path))
+//         }
+//     }
+// }
 
 enum AppMessage {
     Update,
@@ -74,16 +106,7 @@ impl Component for App {
 
         Self {
             link,
-            form: Form::new(model, vec![
-                // TODO: Derive automatically
-                text_field!(first_name),
-                text_field!(last_name),
-                text_field!(address.street),
-                text_field!(address.city),
-                text_field!(address.province),
-                text_field!(address.country),
-                bool_field!(accept_terms),
-            ]),
+            form: Form::new(model),
             submitted: false,
         }
     }
@@ -153,11 +176,11 @@ impl Component for App {
                         </div>
                     </div>
                     <div class="form-group">
-                        <label for="accept_terms">{"Accept Terms and Conditions: "}</label>
                         <CheckBox<Registration>
                             field_name="accept_terms"
                             form=&self.form
                         />
+                        <label class="form-check-label" for="accept_terms">{"Accept Terms and Conditions: "}</label>
                         <div class="invalid-feedback">
                           {&self.form.field_message("accept_terms")}
                         </div>
@@ -183,4 +206,49 @@ impl Component for App {
 
 fn main() {
     yew::start_app::<App>();
+}
+
+
+#[cfg(test)]
+mod tests {
+    use crate::yew_form::Model;
+    use validator::{Validate, ValidationError};
+    use crate::Address;
+
+    #[test]
+    fn test_address() {
+        let mut address = Address {
+            street: "street_i".to_string(),
+            city: "city_i".to_string(),
+            province: "prov_i".to_string(),
+            postal_code: "po_i".to_string(),
+            country: "country_i".to_string()
+        };
+
+        let mut fields = vec![];
+        address.fields(&mut fields);
+
+        assert_eq!(fields.len(), 5);
+        assert!(fields.contains(&String::from("street")));
+
+        assert_eq!(address.value("street"), String::from(address.street.clone()));
+
+        address.set_value("street", "street_o");
+
+        assert_eq!(address.value("street"), String::from("street_o"));
+    }
+
+    #[test]
+    #[should_panic]
+    fn test_invalid_field_name() {
+        let address = Address {
+            street: "street_i".to_string(),
+            city: "city_i".to_string(),
+            province: "prov_i".to_string(),
+            postal_code: "po_i".to_string(),
+            country: "country_i".to_string()
+        };
+
+        address.value("not_exist");
+    }
 }
