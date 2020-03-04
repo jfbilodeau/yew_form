@@ -51,7 +51,7 @@ impl<T: Model> Form<T> {
         &self.field(field_name).message
     }
 
-    pub fn set_field(&mut self, field_name: &str, field_value: &str) {
+    pub fn set_field_value(&mut self, field_name: &str, field_value: &str) {
         self.state_mut().set_field_value(field_name, field_value);
     }
 

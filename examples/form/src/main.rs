@@ -129,7 +129,6 @@ impl Component for App {
                 <h1>{"Yew Form Example"}</h1>
                 <p>{format!("Hello, {} {} and welcome to Yew Form!", self.form.model().first_name, self.form.model().last_name)}</p>
                 <form>
-                    // TODO: Make oninput optional
                     // TODO: support additional attributes
                     // TODO: Remove hard-coded Bootstrap classes
                     // TODO: Update form without needing oninput
@@ -137,42 +136,42 @@ impl Component for App {
                         <label for="first_name">{"First Name: "}</label>
                         <Field<Registration> form=&self.form field_name="first_name" oninput=self.link.callback(|_: InputData| AppMessage::Update) />
                         <div class="invalid-feedback">
-                          {&self.form.field_message("first_name")}
+                            {&self.form.field_message("first_name")}
                         </div>
                     </div>
                     <div class="form-group">
                         <label for="last_name">{"Last Name: "}</label>
                         <Field<Registration> form=&self.form field_name="last_name" oninput=self.link.callback(|_: InputData| AppMessage::Update) />
                         <div class="invalid-feedback">
-                          {&self.form.field_message("last_name")}
+                            {&self.form.field_message("last_name")}
                         </div>
                     </div>
                     <div class="form-group">
                         <label for="address.street">{"Street: "}</label>
                         <Field<Registration> form=&self.form field_name="address.street" oninput=self.link.callback(|_: InputData| AppMessage::Update) />
                         <div class="invalid-feedback">
-                          {&self.form.field_message("address.street")}
+                            {&self.form.field_message("address.street")}
                         </div>
                     </div>
                     <div class="form-group">
                         <label for="address.city">{"City: "}</label>
                         <Field<Registration> form=&self.form field_name="address.city" oninput=self.link.callback(|_: InputData| AppMessage::Update) />
                         <div class="invalid-feedback">
-                          {&self.form.field_message("address.city")}
+                            {&self.form.field_message("address.city")}
                         </div>
                     </div>
                     <div class="form-group">
                         <label for="address.province">{"Province: "}</label>
                         <Field<Registration> form=&self.form field_name="address.province" oninput=self.link.callback(|_: InputData| AppMessage::Update) />
                         <div class="invalid-feedback">
-                          {&self.form.field_message("address.province")}
+                            {&self.form.field_message("address.province")}
                         </div>
                     </div>
                     <div class="form-group">
-                        <label for="address.country">{"Country: "}</label>
+                        <label for="address.country">{"Country (optional): "}</label>
                         <Field<Registration> form=&self.form field_name="address.country" oninput=self.link.callback(|_: InputData| AppMessage::Update) />
                         <div class="invalid-feedback">
-                          {&self.form.field_message("address.country")}
+                            {&self.form.field_message("address.country")}
                         </div>
                     </div>
                     <div class="form-group">

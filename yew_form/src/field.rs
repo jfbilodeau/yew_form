@@ -70,7 +70,7 @@ impl<T: Model> Field<T> {
     }
 
     pub fn set_field(&mut self, field_name: &str, value: &str) {
-        self.form.set_field(field_name, value)
+        self.form.set_field_value(field_name, value)
     }
 }
 

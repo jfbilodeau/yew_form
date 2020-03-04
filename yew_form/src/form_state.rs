@@ -14,26 +14,10 @@ impl<T: Model> FormState<T> {
         model.fields(&mut fields);
 
         let form = FormState {
-            model,
-            fields: fields.iter().map(|f| FormField::new(f)).collect()
+            model: model.clone(),
+            fields: fields.iter().map(|f| FormField::new(f, &model.value(f))).collect()
         };
 
-        // for field in &mut form.fields {
-        //     match field.field_type {
-        //         FormFieldType::String(f, _) => {
-        //             field.field_value = f(&form.model).to_string();
-        //         }
-        //         FormFieldType::Bool(f, _) => {
-        //             field.field_value = String::from(if f(&form.model) { "checked" } else { "" });
-        //         }
-        //         FormFieldType::I32(f, _) => {
-        //             field.field_value = f(&form.model).to_string();
-        //         }
-        //         FormFieldType::F64(f, _) => {
-        //             field.field_value = f(&form.model).to_string();
-        //         }
-        //     }
-        // }
         form
     }
 
@@ -64,42 +48,17 @@ impl<T: Model> FormState<T> {
 
         let field = self.field_mut(field_path);
         field.field_value = String::from(field_value);
+        field.dirty = true;
 
-        if let Err(e) = result {
-            field.message = String::from(e);
+        match result {
+            Ok(()) => {
+                field.valid = true
+            },
+            Err(e) => {
+                field.valid = false;
+                field.message = String::from(e);
+            }
         }
-
-        // let mut field = self.field_mut(field_path);
-        //
-        // field.field_value = field_value.to_string();
-        // field.dirty = true;
-        //
-        // match field.field_type {
-        //     FormFieldType::String(_, f) => {
-        //         let value = field.field_value.clone();
-        //         f(&mut self.model, &value);
-        //     }
-        //     FormFieldType::Bool(_, f) => {
-        //         let value = field.field_value != "";
-        //         f(&mut self.model, value);
-        //     }
-        //     FormFieldType::I32(_, f) => {
-        //         if let Ok(value) = field.field_value.parse::<i32>() {
-        //             f(&mut self.model, value);
-        //         } else {
-        //             field.valid = false;
-        //             field.message = "Invalid number".to_string();
-        //         }
-        //     }
-        //     FormFieldType::F64(_, f) => {
-        //         if let Ok(value) = field.field_value.parse::<f64>() {
-        //             f(&mut self.model, value);
-        //         } else {
-        //             field.valid = false;
-        //             field.message = "Invalid number".to_string();
-        //         }
-        //     }
-        // }
     }
 
     pub fn valid(&self) -> bool {

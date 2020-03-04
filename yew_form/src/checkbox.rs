@@ -30,7 +30,7 @@ impl<T: Model> CheckBox<T> {
     fn set_value(&mut self, value: bool) {
         let field_path = &self.props.field_name;
 
-        self.props.form.model_mut().set_value(field_path, &value.to_string());
+        self.props.form.set_field_value(field_path, &value.to_string());
     }
 }
 
