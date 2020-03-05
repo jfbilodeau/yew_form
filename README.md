@@ -1,8 +1,6 @@
 [![License:MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT) [![License:Apache](https://img.shields.io/badge/License-Apache-yellow.svg)](https://opensource.org/licenses/Apache-2.0)
 # Yew Form
-Bringing MVC to Yew! A set of Yew component to map and validate a model to a HTML form.
-
-**Early Work in Progress**
+Bringing MVC to Yew! A set of mildly opinionated Yew component to map and validate a model to a HTML form.
 
 [Live demo](http://chronogears.com/yew-form/)
 
@@ -13,7 +11,7 @@ Supports:
 ## Example
 Consider the following model:
 ```rust
-#[derive(Validate, PartialEq, Clone)]
+#[derive(Model, Validate, PartialEq, Clone)]
 struct Address {
     #[validate(length(min = 1))]
     street: String,
@@ -25,7 +23,7 @@ struct Address {
     country: String,
 }
 
-#[derive(Validate, PartialEq, Clone)]
+#[derive(Model, Validate, PartialEq, Clone)]
 struct Registration {
     #[validate(length(min = 1))]
     first_name: String,
@@ -62,15 +60,7 @@ fn create(_props: Self::Properties, link: ComponentLink<Self>) -> Self {
     };
 
     Self {
-        form: Form::new(model, vec![
-            // TODO: Derive those automatically
-            text_field!(first_name),
-            text_field!(last_name),
-            text_field!(address.street),
-            text_field!(address.city),
-            text_field!(address.province),
-            text_field!(address.country),
-        ]),
+        form: Form::new(model),
         ...
     }
     ...
@@ -81,6 +71,8 @@ Fields can then be added to the form as follows:
 <Field<Registration> form=&self.form field_name="first_name" oninput=self.link.callback(|_: InputData| AppMessage::Update) />
 ...
 <Field<Registration> form=&self.form field_name="address.street" oninput=self.link.callback(|_: InputData| AppMessage::Update) />
+...
+<CheckBox<Registration> field_name="accept_terms" form=&self.form />
 ```
 The `Field` component takes care of two way binding between `struct Registration` and the HTML `<input>`
 
@@ -93,9 +85,9 @@ if self.form.validate() {
 ```
 
 Todo/Wish List:
-- [ ] Add documentation
-- [ ] Remove clone requirement from model
-- [ ] Add `derive` for model to remove need for `vec!` of fields
+- [ ] Add documentation (In progress)
+- [ ] ~~Remove clone requirement from model~~
+- [X] Add `derive` for model to remove need for `vec!` of fields
 - [X] Make `oninput` optional
 - [ ] Make Yew update the view when `Field` is updated
 - [ ] Need to add additional HTML attribute to `Field`
@@ -106,7 +98,9 @@ Todo/Wish List:
 ## Change Log
 
 ### 0.1.3
+**BREAKING CHANGES**
 - Added `#[derive(Model)]`
+- No need to manually pass a vector of fields to `Form::new()`
 
 ### 0.1.2
 - Added CheckBox

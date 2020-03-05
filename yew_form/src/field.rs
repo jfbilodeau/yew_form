@@ -100,7 +100,7 @@ impl<T: Model> Component for Field<T> {
             FieldMessage::OnInput(input_data) => {
                 let state = self.form.state_mut();
                 state.set_field_value(&self.field_name, &input_data.value);
-                state.validate();
+                state.update_validation();
 
                 self.oninput.emit(input_data);
                 true

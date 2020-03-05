@@ -26,7 +26,6 @@ fn must_be_true(value: &bool) -> Result<(), ValidationError> {
     }
 }
 
-// TODO: Remove Clone requirement
 #[derive(Model, Validate, PartialEq, Clone)]
 struct Address {
     #[validate(length(min = 1, message="Street is required"))]
@@ -50,29 +49,6 @@ struct Registration {
     #[validate(custom = "must_be_true")]
     accept_terms: bool,
 }
-
-// impl Model for Registration {
-//     fn fields(&self, fields: &mut Vec<String>) {
-//         fields.push(String::from("first_name"));
-//         fields.push(String::from("last_name"));
-//         fields.push(String::from("address.street"));
-//         fields.push(String::from("accept_terms"));
-//     }
-//
-//     fn set_value(&mut self, field_path: &str, value: &str) {
-//         unimplemented!()
-//     }
-//
-//     fn value(&self, field_path: &str) -> String {
-//         match field_path {
-//             "first_name" => self.first_name.to_string(),
-//             "last_name" => self.last_name.to_string(),
-//             "address.street" => self.address.get_value("street"),
-//             "accept_terms" => self.accept_terms.to_string(),
-//             _ => panic!(format!("Field {} does not exist", field_path))
-//         }
-//     }
-// }
 
 enum AppMessage {
     Update,
@@ -113,7 +89,7 @@ impl Component for App {
 
     fn update(&mut self, msg: Self::Message) -> bool {
         match msg {
-            AppMessage::Update => true,
+            AppMessage::Update => true, // Force update
             AppMessage::Submit => {
                 if self.form.validate() {
                     self.submitted = true;

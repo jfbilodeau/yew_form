@@ -44,19 +44,21 @@ impl<T: Model> FormState<T> {
     }
 
     pub fn set_field_value(&mut self, field_path: &str, field_value: &str) {
-        let result = self.model.set_value(field_path, field_value);
+        if self.field_value(field_path) != field_value {
+            let result = self.model.set_value(field_path, field_value);
 
-        let field = self.field_mut(field_path);
-        field.field_value = String::from(field_value);
-        field.dirty = true;
+            let field = self.field_mut(field_path);
+            field.field_value = String::from(field_value);
+            field.dirty = true;
 
-        match result {
-            Ok(()) => {
-                field.valid = true
-            },
-            Err(e) => {
-                field.valid = false;
-                field.message = String::from(e);
+            match result {
+                Ok(()) => {
+                    field.valid = true
+                },
+                Err(e) => {
+                    field.valid = false;
+                    field.message = String::from(e);
+                }
             }
         }
     }
@@ -73,7 +75,7 @@ impl<T: Model> FormState<T> {
         &self.field(field_path).message
     }
 
-    /// Perform validation on the model
+    /// Marks all the fields as `dirty` and perform validation on the model
     /// Returns `true` if the model passes validation
     pub fn validate(&mut self) -> bool {
         self.fields.iter_mut().for_each(|f| {
@@ -81,34 +83,35 @@ impl<T: Model> FormState<T> {
             f.dirty = true;
         });
 
-        let result = self.model.validate();
-
-        if let Err(errors) = result {
-            self.add_errors("", &errors);
-        }
+        self.update_validation();
 
         self.valid()
     }
 
-    fn generate_field_name(&self, prefix: &str, field_name: &str) -> String {
-        // NOTE: Though &self is not require, it avoids having to call the function as follows:
-        // FormState<T>::generate_field_name()
-        if prefix == "" {
-            String::from(field_name)
-        } else {
-            format!("{}.{}", prefix, field_name)
+    pub(crate) fn update_validation(&mut self) {
+        let result = self.model.validate();
+        if let Err(errors) = result {
+            self.add_errors("", &errors);
         }
     }
 
     fn add_errors(&mut self, prefix: &str, errors: &ValidationErrors) {
+        fn generate_field_name(prefix: &str, field_name: &str) -> String {
+            if prefix == "" {
+                String::from(field_name)
+            } else {
+                format!("{}.{}", prefix, field_name)
+            }
+        }
+
         for (field_name, error) in errors.errors() {
             match error {
                 ValidationErrorsKind::Struct(errors) => {
-                    self.add_errors(&self.generate_field_name(prefix, field_name), errors)
+                    self.add_errors(&generate_field_name(prefix, field_name), errors)
                 }
                 ValidationErrorsKind::List(_) => { /* Ignore? */ }
                 ValidationErrorsKind::Field(errors) => {
-                    let field = self.field_mut(&self.generate_field_name(prefix, field_name));
+                    let field = self.field_mut(&generate_field_name(prefix, field_name));
 
                     field.valid = false;
 
