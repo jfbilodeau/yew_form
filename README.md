@@ -16,8 +16,8 @@ Cargo.toml:
 validator = "0.10"
 validator_derive = "0.10"
 yew = "0.12"
-yew_form = "0.1"
-yew_form_derive = "0.1"
+yew_form = "0.1.4"
+yew_form_derive = "0.1.4"
 ```
 main.rs:
 ```rust
@@ -33,11 +33,11 @@ Consider the following model:
 ```rust
 #[derive(Model, Validate, PartialEq, Clone)]
 struct Address {
-    #[validate(length(min = 1))]
+    #[validate(length(min = 1, message="Street is required"))]
     street: String,
-    #[validate(length(min = 1))]
+    #[validate(length(min = 1, message="City name is required"))]
     city: String,
-    #[validate(regex = "PROVINCE_RE")]
+    #[validate(regex(path="PROVINCE_RE", message="Enter 2 digit province code"))]
     province: String,
     postal_code: String,
     country: String,
@@ -45,12 +45,16 @@ struct Address {
 
 #[derive(Model, Validate, PartialEq, Clone)]
 struct Registration {
-    #[validate(length(min = 1))]
+    #[validate(length(min = 1, message="First name is required"))]
     first_name: String,
-    #[validate(length(min = 1, message="Enter 2 digit province code"))]
+    #[validate(length(min = 1, message="Last name is required"))]
     last_name: String,
+    quantity: u32,
+    price: f64,
     #[validate]
     address: Address,
+    #[validate(custom = "must_be_true")]
+    accept_terms: bool,
 }
 ```
 
@@ -112,10 +116,13 @@ Todo/Wish List:
 - [ ] Make Yew update the view when `Field` is updated
 - [ ] Need to add additional HTML attribute to `Field`
 - [ ] Remove hard-coded Bootstrap styles
-- [ ] Add support for additional types such as `i32`
+- [X] Add support for additional types such as `i32`
 - [ ] Support `Vec<T>`
 
 ## Change Log
+
+### 0.1.4
+- Added blanket implementation for FieldValue to support `i32`, `bool`, etc...
 
 ### 0.1.3
 **BREAKING CHANGES**
@@ -127,3 +134,6 @@ Todo/Wish List:
 
 ### 0.1.1
 - Make `Field::oninput` optional
+
+
+(Made with ❤️ with Rust)

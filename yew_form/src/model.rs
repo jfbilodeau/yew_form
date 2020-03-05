@@ -1,4 +1,5 @@
 use validator::Validate;
+use std::str::FromStr;
 
 pub trait FormValue {
     fn fields(&self, prefix: &str, fields: &mut Vec<String>) {
@@ -21,23 +22,42 @@ pub fn split_field_path(field_path: &str) -> (&str, &str) {
     }
 }
 
-impl FormValue for String {
-    fn value(&self, field_path: &str) -> String {
-        debug_assert!(field_path == "");
+// impl FormValue for String {
+//     fn value(&self, field_path: &str) -> String {
+//         debug_assert!(field_path == "");
+//
+//         self.clone()
+//     }
+//
+//     fn set_value(&mut self, field_path: &str, value: &str) -> Result<(), String> {
+//         debug_assert!(field_path == "");
+//
+//         self.clone_from(&String::from(value));
+//
+//         Ok(())
+//     }
+// }
 
-        self.clone()
-    }
+// impl FormValue for bool {
+//     fn value(&self, field_path: &str) -> String {
+//         debug_assert!(field_path == "");
+//
+//         self.to_string()
+//     }
+//
+//     fn set_value(&mut self, field_path: &str, value: &str) -> Result<(), String> {
+//         debug_assert!(field_path == "");
+//
+//         if let Ok(v) = value.parse::<bool>() {
+//             *self = v;
+//             Ok(())
+//         } else {
+//             Err(String::from("Could not convert to bool"))
+//         }
+//     }
+// }
 
-    fn set_value(&mut self, field_path: &str, value: &str) -> Result<(), String> {
-        debug_assert!(field_path == "");
-
-        self.clone_from(&String::from(value));
-
-        Ok(())
-    }
-}
-
-impl FormValue for bool {
+impl<T: ToString + FromStr> FormValue for T {
     fn value(&self, field_path: &str) -> String {
         debug_assert!(field_path == "");
 
@@ -47,14 +67,16 @@ impl FormValue for bool {
     fn set_value(&mut self, field_path: &str, value: &str) -> Result<(), String> {
         debug_assert!(field_path == "");
 
-        if let Ok(v) = value.parse::<bool>() {
+        if let Ok(v) = value.parse::<T>() {
             *self = v;
             Ok(())
         } else {
-            Err(String::from("Could not convert to bool"))
+            Err(String::from("Could not convert"))
         }
     }
 }
+
+
 
 #[cfg(test)]
 mod tests {

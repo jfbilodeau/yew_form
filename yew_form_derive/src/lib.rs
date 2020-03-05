@@ -22,9 +22,6 @@ pub fn derive_model(input: TokenStream) -> TokenStream {
     let mut field_idents: Vec<syn::Ident> = vec![];
     let mut field_names: Vec<String> = vec![];
     let mut field_types: Vec<String> = vec![];
-    // let mut fn_fields_list: Vec<TokenStream2> = vec![];
-    // let mut fn_value_list: Vec<TokenStream2> = vec![];
-    // let mut fn_set_value_list: Vec<TokenStream2> = vec![];
 
     for field in &fields {
         let field_ident = field.ident.clone().unwrap();
@@ -38,55 +35,9 @@ pub fn derive_model(input: TokenStream) -> TokenStream {
             _ => panic!("Type `{:?}` of field `{}` is not supported", field.ty, field_ident),
         };
 
-        // let fn_fields = if is_scalar {
-        //     quote! {
-        //         fields.push(field_name, )
-        //         fields.push(
-        //             String::from(
-        //                 #field_name
-        //             )
-        //         );
-        //     }
-        // } else {
-        //     quote! {
-        //         {
-        //             let mut child_fields: Vec<String> = vec![];
-        //             self.address.fields(&mut child_fields);
-        //             &child_fields.iter().map(|f| format!("{}.{}", #field_name, f)).for_each(|f| fields.push(f));
-        //         }
-        //     }
-        // };
-
-        // let fn_value = match field_type.as_str() {
-        //     "String" => quote! {
-        //         #field_name => self.#field_ident.clone()
-        //     },
-        //     "bool" => quote! {
-        //         #field_name => self.#field_ident.to_string()
-        //     },
-        //     _ => quote! {
-        //         #field_name => self.#field_ident.value(&suffix)
-        //     }
-        // };
-        //
-        // let fn_set_value = match field_type.as_str() {
-        //     "String" => quote! {
-        //         #field_name => { self.#field_ident = String::from(value); Ok(()) }
-        //     },
-        //     "bool" => quote! {
-        //         #field_name => { self.#field_ident = value == "true"; Ok(()) }
-        //     },
-        //     _ => quote! {
-        //         #field_name => { self.#field_ident.set_value(suffix, value) }
-        //     }
-        // };
-
         field_idents.push(field_ident);
         field_names.push(field_name);
         field_types.push(field_type);
-        // fn_fields_list.push(fn_fields);
-        // fn_value_list.push(fn_value);
-        // fn_set_value_list.push(fn_set_value);
     }
 
     let struct_name = &ast.ident;

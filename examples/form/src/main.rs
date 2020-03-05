@@ -44,10 +44,18 @@ struct Registration {
     first_name: String,
     #[validate(length(min = 1, message="Last name is required"))]
     last_name: String,
+    quantity: u32,
+    price: f64,
     #[validate]
     address: Address,
     #[validate(custom = "must_be_true")]
     accept_terms: bool,
+}
+
+impl Registration {
+    pub fn total(&self) -> f64 {
+        self.quantity as f64 * self.price
+    }
 }
 
 enum AppMessage {
@@ -70,6 +78,8 @@ impl Component for App {
         let model = Registration {
             first_name: String::from("J-F"),
             last_name: String::from("Bilodeau"),
+            quantity: 10,
+            price: 5.99,
             address: Address {
                 street: String::new(),
                 city: String::from("Ottawa"),
@@ -121,6 +131,23 @@ impl Component for App {
                         <div class="invalid-feedback">
                             {&self.form.field_message("last_name")}
                         </div>
+                    </div>
+                    <div class="form-group">
+                        <label for="last_name">{"Quantity: "}</label>
+                        <Field<Registration> form=&self.form field_name="quantity" oninput=self.link.callback(|_: InputData| AppMessage::Update) />
+                        <div class="invalid-feedback">
+                            {&self.form.field_message("quantity")}
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label for="last_name">{"Price: "}</label>
+                        <Field<Registration> form=&self.form field_name="price" oninput=self.link.callback(|_: InputData| AppMessage::Update) />
+                        <div class="invalid-feedback">
+                            {&self.form.field_message("price")}
+                        </div>
+                    </div>
+                    <div>
+                        {"Total: "}{format!("{:.2}", self.form.model().total())}
                     </div>
                     <div class="form-group">
                         <label for="address.street">{"Street: "}</label>
@@ -218,6 +245,8 @@ mod tests {
         let mut registration = Registration {
             first_name: "first_name_i".to_string(),
             last_name: "last_name_i".to_string(),
+            quantity: 10,
+            price: 5.99,
             address: Address {
                 street: "street_i".to_string(),
                 city: "city_i".to_string(),
@@ -231,8 +260,19 @@ mod tests {
         let mut fields = vec![];
         registration.fields("", &mut fields);
 
-        assert_eq!(fields.len(), 8);
+        assert_eq!(fields.len(), 10);
         assert!(fields.contains(&String::from("address.street")));
+
+        assert_eq!(&registration.value("quantity"), "10");
+        assert_eq!(&registration.value("price"), "5.99");
+
+        let result = registration.set_value("quantity", "A");
+        assert!(result.is_err());
+
+        let result = registration.set_value("quantity", "12");
+        assert!(result.is_ok());
+        assert_eq!(&registration.value("quantity"), "12");
+
 
         assert_eq!(registration.value("address.street"), String::from(registration.address.street.clone()));
 
