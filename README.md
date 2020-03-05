@@ -7,6 +7,26 @@ Bringing MVC to Yew! A set of mildly opinionated Yew component to map and valida
 Supports:
 - 2-way Binding to struct (with support for nested structs)
 - Validation ([using Keats Validator](https://github.com/Keats/validator))
+- Only `String` and `bool` fields are supported presently. More to come
+
+## Usage
+Cargo.toml:
+```toml
+[dependencies]
+validator = "0.10"
+validator_derive = "0.10"
+yew = "0.12"
+yew_form = "0.1"
+yew_form_derive = "0.1"
+```
+main.rs:
+```rust
+#[macro_use]
+extern crate validator_derive;
+extern crate yew_form;
+#[macro_use]
+extern crate yew_form_derive;
+```
 
 ## Example
 Consider the following model:
