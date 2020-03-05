@@ -11,7 +11,7 @@ impl<T: Model> FormState<T> {
     pub fn new(model: T) -> FormState<T> {
         let mut fields = vec![];
 
-        model.fields(&mut fields);
+        model.fields("", &mut fields);
 
         let form = FormState {
             model: model.clone(),

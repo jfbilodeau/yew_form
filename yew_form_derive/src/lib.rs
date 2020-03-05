@@ -3,7 +3,7 @@
 extern crate quote;
 extern crate syn;
 
-use syn::export::{ToTokens, TokenStream2, TokenStream};
+use syn::export::{ToTokens, TokenStream};
 
 #[proc_macro_derive(Model)]
 pub fn derive_model(input: TokenStream) -> TokenStream {
@@ -19,11 +19,12 @@ pub fn derive_model(input: TokenStream) -> TokenStream {
         _ => panic!("#[derive(Model)] can only be used with structs"),
     };
 
-    let scalars = vec![ "String", "bool" ];
-
-    let mut fn_fields_list: Vec<TokenStream2> = vec![];
-    let mut fn_value_list: Vec<TokenStream2> = vec![];
-    let mut fn_set_value_list: Vec<TokenStream2> = vec![];
+    let mut field_idents: Vec<syn::Ident> = vec![];
+    let mut field_names: Vec<String> = vec![];
+    let mut field_types: Vec<String> = vec![];
+    // let mut fn_fields_list: Vec<TokenStream2> = vec![];
+    // let mut fn_value_list: Vec<TokenStream2> = vec![];
+    // let mut fn_set_value_list: Vec<TokenStream2> = vec![];
 
     for field in &fields {
         let field_ident = field.ident.clone().unwrap();
@@ -36,54 +37,56 @@ pub fn derive_model(input: TokenStream) -> TokenStream {
             }
             _ => panic!("Type `{:?}` of field `{}` is not supported", field.ty, field_ident),
         };
-        let is_scalar = scalars.contains(&field_type.as_str());
 
-        let fn_fields = if is_scalar {
-            quote! {
-                fields.push(
-                    String::from(
-                        #field_name
-                    )
-                );
-            }
-        } else {
-            quote! {
-                {
-                    let mut child_fields: Vec<String> = vec![];
-                    self.address.fields(&mut child_fields);
-                    // self.#field_name.fields(&mut child_fields);
-                    &child_fields.iter().map(|f| format!("{}.{}", #field_name, f)).for_each(|f| fields.push(f));
-                }
-            }
-        };
+        // let fn_fields = if is_scalar {
+        //     quote! {
+        //         fields.push(field_name, )
+        //         fields.push(
+        //             String::from(
+        //                 #field_name
+        //             )
+        //         );
+        //     }
+        // } else {
+        //     quote! {
+        //         {
+        //             let mut child_fields: Vec<String> = vec![];
+        //             self.address.fields(&mut child_fields);
+        //             &child_fields.iter().map(|f| format!("{}.{}", #field_name, f)).for_each(|f| fields.push(f));
+        //         }
+        //     }
+        // };
 
-        let fn_value = match field_type.as_str() {
-            "String" => quote! {
-                #field_name => self.#field_ident.clone()
-            },
-            "bool" => quote! {
-                #field_name => self.#field_ident.to_string()
-            },
-            _ => quote! {
-                #field_name => self.#field_ident.value(&suffix)
-            }
-        };
+        // let fn_value = match field_type.as_str() {
+        //     "String" => quote! {
+        //         #field_name => self.#field_ident.clone()
+        //     },
+        //     "bool" => quote! {
+        //         #field_name => self.#field_ident.to_string()
+        //     },
+        //     _ => quote! {
+        //         #field_name => self.#field_ident.value(&suffix)
+        //     }
+        // };
+        //
+        // let fn_set_value = match field_type.as_str() {
+        //     "String" => quote! {
+        //         #field_name => { self.#field_ident = String::from(value); Ok(()) }
+        //     },
+        //     "bool" => quote! {
+        //         #field_name => { self.#field_ident = value == "true"; Ok(()) }
+        //     },
+        //     _ => quote! {
+        //         #field_name => { self.#field_ident.set_value(suffix, value) }
+        //     }
+        // };
 
-        let fn_set_value = match field_type.as_str() {
-            "String" => quote! {
-                #field_name => { self.#field_ident = String::from(value); Ok(()) }
-            },
-            "bool" => quote! {
-                #field_name => { self.#field_ident = value == "true"; Ok(()) }
-            },
-            _ => quote! {
-                #field_name => { self.#field_ident.set_value(suffix, value) }
-            }
-        };
-
-        fn_fields_list.push(fn_fields);
-        fn_value_list.push(fn_value);
-        fn_set_value_list.push(fn_set_value);
+        field_idents.push(field_ident);
+        field_names.push(field_name);
+        field_types.push(field_type);
+        // fn_fields_list.push(fn_fields);
+        // fn_value_list.push(fn_value);
+        // fn_set_value_list.push(fn_set_value);
     }
 
     let struct_name = &ast.ident;
@@ -91,15 +94,29 @@ pub fn derive_model(input: TokenStream) -> TokenStream {
 
     let impl_ast = quote! {
         impl #impl_generics ::yew_form::model::Model for #struct_name #ty_generics #where_clause {
-            fn fields(&self, fields: &mut Vec<String>) {
-                #(#fn_fields_list)*
+        }
+
+        impl #impl_generics ::yew_form::model::FormValue for #struct_name #ty_generics #where_clause {
+            fn fields(&self, prefix: &str, fields: &mut Vec<String>) {
+                let field_prefix = if prefix == "" {
+                    String::new()
+                } else {
+                    format!("{}.", prefix)
+                };
+
+                #(
+                let field_path = format!("{}{}", field_prefix, #field_names);
+                self.#field_idents.fields(&field_path, fields);
+                )*
             }
 
             fn value(&self, field_path: &str) -> String {
                 let (field_name, suffix) = ::yew_form::split_field_path(field_path);
 
                 match field_name {
-                    #(#fn_value_list,)*
+                    #(
+                    #field_names => self.#field_idents.value(suffix),
+                    )*
                     _ => panic!(format!("Field {} does not exist in {}", field_path, stringify!(#struct_name)))
                 }
             }
@@ -108,7 +125,9 @@ pub fn derive_model(input: TokenStream) -> TokenStream {
                 let (field_name, suffix) = ::yew_form::split_field_path(field_path);
 
                 match field_name {
-                    #(#fn_set_value_list,)*
+                    #(
+                    #field_names => self.#field_idents.set_value(suffix, value),
+                    )*
                     _ => panic!(format!("Field {} does not exist in {}", field_path, stringify!(#struct_name)))
                 }
             }

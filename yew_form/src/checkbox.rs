@@ -34,7 +34,7 @@ impl<T: Model> CheckBox<T> {
     }
 }
 
-impl<T: Model> Component for CheckBox<T> {
+impl<T: Model + Clone> Component for CheckBox<T> {
     type Message = CheckBoxMessage;
     type Properties = CheckBoxProperties<T>;
 

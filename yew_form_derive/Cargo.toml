@@ -1,6 +1,6 @@
 [package]
 name = "yew_form_derive"
-version = "0.1.0"
+version = "0.1.4"
 authors = ["J-F Bilodeau <jfbilodeau@chronogears.com>"]
 edition = "2018"
 description = "Bringing MVC to Yew! A set mildly opinionated of Yew component to map and validate a model to a HTML form"

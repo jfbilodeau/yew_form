@@ -188,6 +188,7 @@ fn main() {
 mod tests {
     use crate::yew_form::Model;
     use crate::{Address, Registration};
+    use yew_form::model::FormValue;
 
     #[test]
     fn test_address() {
@@ -200,7 +201,7 @@ mod tests {
         };
 
         let mut fields = vec![];
-        address.fields(&mut fields);
+        address.fields("", &mut fields);
 
         assert_eq!(fields.len(), 5);
         assert!(fields.contains(&String::from("street")));
@@ -228,7 +229,7 @@ mod tests {
         };
 
         let mut fields = vec![];
-        registration.fields(&mut fields);
+        registration.fields("", &mut fields);
 
         assert_eq!(fields.len(), 8);
         assert!(fields.contains(&String::from("address.street")));
