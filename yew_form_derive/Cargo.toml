@@ -1,0 +1,21 @@
+[package]
+name = "yew_form_derive"
+version = "0.1.0"
+authors = ["J-F Bilodeau <jfbilodeau@chronogears.com>"]
+edition = "2018"
+description = "Bringing MVC to Yew! A set mildly opinionated of Yew component to map and validate a model to a HTML form"
+license = "MIT"
+repository = "https://github.com/jfbilodeau/yew_form"
+readme = "README.md"
+categories = [ "web-programming" ]
+
+# See more keys and their definitions at https://doc.rust-lang.org/cargo/reference/manifest.html
+
+[lib]
+proc-macro = true
+
+[dependencies]
+proc-macro2 = "1.0.9"
+quote = "1.0.2"
+syn = { version = "1", features = ["full"] }
+yew_form = { version = "0.1", path = "../yew_form" }
