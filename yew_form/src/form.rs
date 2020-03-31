@@ -4,10 +4,9 @@ use crate::form_state::FormState;
 use crate::{Model};
 use crate::form_field::FormField;
 
-//pub type Form<T> = Rc<FormState<T>>;
 #[derive(Clone)]
 pub struct Form<T: Model> {
-    pub state: Rc<FormState<T>>
+    state: Rc<FormState<T>>,
 }
 
 impl<T: Model> Form<T> {
@@ -75,3 +74,23 @@ impl<T: Model> PartialEq for Form<T> {
         self.state.model != other.state.model
     }
 }
+
+// impl<T: Model> Component for Form<T> {
+//     type Message = ();
+//     type Properties = FormProperties;
+//
+//     fn create(props: Self::Properties, link: ComponentLink<Self>) -> Self {
+//         Self {
+//             children: props.children,
+//             state: T::new(),
+//         }
+//     }
+//
+//     fn update(&mut self, msg: Self::Message) -> bool {
+//         unimplemented!()
+//     }
+//
+//     fn view(&self) -> Html {
+//         unimplemented!()
+//     }
+// }
