@@ -121,6 +121,9 @@ Todo/Wish List:
 
 ## Change Log
 
+### 0.1.5
+- Updated to Yew 0.17
+
 ### 0.1.4
 - Added blanket implementation for FieldValue to support `i32`, `bool`, etc...
 
