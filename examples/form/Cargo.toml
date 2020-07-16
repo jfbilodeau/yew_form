@@ -4,15 +4,16 @@ version = "0.1.0"
 authors = ["J-F Bilodeau <jfbilodeau@chronogears.com>"]
 edition = "2018"
 
-# See more keys and their definitions at https://doc.rust-lang.org/cargo/reference/manifest.html
+[lib]
+crate-type = ["cdylib", "rlib"]
 
 [dependencies]
 lazy_static = "1.4"
 regex = "1"
-stdweb = "0.4"
 validator = "0.10"
 validator_derive = "0.10"
-yew = "0.12"
+wasm-bindgen = "0.2"
+yew = "0.17"
 yew_form =  { version = "0.1", path = "../../yew_form"}
 yew_form_derive =  { version = "0.1", path = "../../yew_form_derive"}
 

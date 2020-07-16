@@ -7,10 +7,10 @@ extern crate yew_form;
 #[macro_use]
 extern crate yew_form_derive;
 
+use wasm_bindgen::prelude::*;
 use regex::Regex;
-use stdweb::web::event::IEvent;
 use validator::{Validate, ValidationError};
-use yew::{ClickEvent, Component, ComponentLink, Html, html, InputData};
+use yew::{MouseEvent, Component, ComponentLink, Html, html, InputData};
 
 use yew_form::{CheckBox, Field, Form};
 
@@ -109,6 +109,10 @@ impl Component for App {
         }
     }
 
+    fn change(&mut self, _props: Self::Properties) -> bool {
+        true
+    }
+
     fn view(&self) -> Html {
         html! {
             <div class="container-sm">
@@ -188,7 +192,7 @@ impl Component for App {
                         </div>
                     </div>
                     <div class="form-group">
-                        <button type="button" onclick=self.link.callback(|e: ClickEvent| {e.prevent_default(); AppMessage::Submit})>{"Submit"}</button>
+                        <button type="button" onclick=self.link.callback(|e: MouseEvent| {e.prevent_default(); AppMessage::Submit})>{"Submit"}</button>
                     </div>
                 </form>
                 <div hidden=!self.submitted>
@@ -206,14 +210,14 @@ impl Component for App {
     }
 }
 
-fn main() {
+#[wasm_bindgen(start)]
+pub fn run_app() {
     yew::start_app::<App>();
 }
 
 
 #[cfg(test)]
 mod tests {
-    use crate::yew_form::Model;
     use crate::{Address, Registration};
     use yew_form::model::FormValue;
 

@@ -14,15 +14,13 @@ fn default_text() -> String {
 
 #[derive(Properties, PartialEq, Clone)]
 pub struct FieldProperties<T: Model> {
-    #[props(default = "default_text")]
+    #[prop_or_else(default_text)]
     pub input_type: String,
-    #[props(required)]
     pub field_name: String,
-    #[props(required)]
     pub form: Form<T>,
-    #[props(default = String::new)]
+    #[prop_or_else(String::new)]
     pub placeholder: String,
-    #[props(default = "Callback::noop")]
+    #[prop_or_else(Callback::noop)]
     pub oninput: Callback<InputData>,
 }
 
