@@ -21,9 +21,7 @@ impl<T: Model> Form<T> {
     }
 
     pub(crate) fn state_mut(&mut self) -> &mut FormState<T> {
-        unsafe {
-            Rc::get_mut_unchecked(&mut self.state)
-        }
+        Rc::get_mut(& mut self.state).unwrap()
     }
 
     pub fn validate(&mut self) -> bool {
