@@ -16,7 +16,7 @@ Cargo.toml:
 validator = "0.10"
 validator_derive = "0.10"
 yew = "0.12"
-yew_form = "0.1.4"
+yew_form = "0.1"
 yew_form_derive = "0.1.4"
 ```
 main.rs:
@@ -118,8 +118,16 @@ Todo/Wish List:
 - [ ] Remove hard-coded Bootstrap styles
 - [X] Add support for additional types such as `i32`
 - [ ] Support `Vec<T>`
+- [X] Support Rust Stable
 
 ## Change Log
+
+### 0.1.7
+- Remove `#![feature(get_mut_unchecked)]` from code (Thanks [L0g4n](https://github.com/L0g4n))
+
+### 0.1.6
+- Removed unsafe code
+- Updated yew_form version in documentation
 
 ### 0.1.5
 - Updated to Yew 0.17
