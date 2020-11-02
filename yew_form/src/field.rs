@@ -2,7 +2,6 @@ use yew::{Component, ComponentLink, Html, html, Properties, InputData, Callback,
 
 use crate::form::{Form};
 use crate::{Model};
-use crate::form_field::FormField;
 
 pub enum FieldMessage {
     OnInput(InputData)
@@ -34,16 +33,13 @@ pub struct Field<T: Model> {
 }
 
 impl<T: Model> Field<T> {
-    fn field(&self) -> &FormField {
-        self.form.field(&self.field_name)
-    }
-
     pub fn field_name(&self) -> &str {
         &self.field_name
     }
 
     pub fn class(&self) -> &str {
-        let field = self.field();
+        let s = self.form.state();
+        let field = s.field(&self.field_name);
 
         if field.dirty && field.valid {
             "form-control is-valid"
@@ -55,8 +51,8 @@ impl<T: Model> Field<T> {
     }
 
 
-    pub fn message(&self) -> &str {
-        &self.form.field_message(&self.field_name())
+    pub fn message(&self) -> String {
+        self.form.field_message(&self.field_name())
     }
 
     pub fn valid(&self) -> bool {
@@ -64,7 +60,7 @@ impl<T: Model> Field<T> {
     }
 
     pub fn dirty(&self) -> bool {
-        self.field().dirty
+        self.form.state().field(&self.field_name).dirty
     }
 
     pub fn set_field(&mut self, field_name: &str, value: &str) {
@@ -96,9 +92,10 @@ impl<T: Model> Component for Field<T> {
     fn update(&mut self, msg: Self::Message) -> ShouldRender {
         match msg {
             FieldMessage::OnInput(input_data) => {
-                let state = self.form.state_mut();
+                let mut state = self.form.state_mut();
                 state.set_field_value(&self.field_name, &input_data.value);
-                state.update_validation();
+                state.update_validation_field(&self.field_name);
+                drop(state);
 
                 self.oninput.emit(input_data);
                 true
