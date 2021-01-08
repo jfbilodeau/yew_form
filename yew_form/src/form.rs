@@ -21,7 +21,6 @@ impl<T: Model> Form<T> {
     }
 
     pub(crate) fn state_mut(&mut self) -> RefMut<FormState<T>> {
-        log::info!("state_mut");
         self.state.borrow_mut()
     }
 

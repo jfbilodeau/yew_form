@@ -15,4 +15,3 @@ categories = [ "web-programming" ]
 validator = "0.10.0"
 validator_derive = "0.10.0"
 yew = "0.17"
-log = "*"
