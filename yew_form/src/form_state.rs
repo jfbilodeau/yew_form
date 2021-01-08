@@ -53,7 +53,8 @@ impl<T: Model> FormState<T> {
 
             match result {
                 Ok(()) => {
-                    field.valid = true
+                    field.valid = true;
+                    field.message = String::new();
                 },
                 Err(e) => {
                     field.valid = false;
@@ -89,13 +90,31 @@ impl<T: Model> FormState<T> {
     }
 
     pub(crate) fn update_validation(&mut self) {
-        let result = self.model.validate();
-        if let Err(errors) = result {
-            self.add_errors("", &errors);
+        match self.model.validate() {
+            Ok(()) => self.clear_errors(),
+            Err(errors) => {
+                self.add_errors("", None, &errors);
+            }
         }
     }
 
-    fn add_errors(&mut self, prefix: &str, errors: &ValidationErrors) {
+
+    pub(crate) fn update_validation_field(&mut self, field: &str) {
+        match self.model.validate() {
+            Ok(()) => self.clear_errors(),
+            Err(errors) => {
+                self.add_errors("", Some(field), &errors);
+            }
+        }
+    }
+
+    fn clear_errors(&mut self) {
+        for field in &mut self.fields {
+            field.message = "".to_string();
+        }
+    }
+    
+    fn add_errors(&mut self, prefix: &str, field_name_filter: Option<&str>, errors: &ValidationErrors) {
         fn generate_field_name(prefix: &str, field_name: &str) -> String {
             if prefix == "" {
                 String::from(field_name)
@@ -105,9 +124,16 @@ impl<T: Model> FormState<T> {
         }
 
         for (field_name, error) in errors.errors() {
+            if let Some(ref field_name_filter) = field_name_filter {
+                if field_name != field_name_filter {
+                    // ignore all fields not matching this field
+                    continue;
+                }
+            }
+            
             match error {
                 ValidationErrorsKind::Struct(errors) => {
-                    self.add_errors(&generate_field_name(prefix, field_name), errors)
+                    self.add_errors(&generate_field_name(prefix, field_name), field_name_filter, errors)
                 }
                 ValidationErrorsKind::List(_) => { /* Ignore? */ }
                 ValidationErrorsKind::Field(errors) => {
