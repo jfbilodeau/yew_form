@@ -3,7 +3,8 @@
 extern crate quote;
 extern crate syn;
 
-use syn::export::{ToTokens, TokenStream};
+use proc_macro::TokenStream;
+use quote::ToTokens;
 
 #[proc_macro_derive(Model)]
 pub fn derive_model(input: TokenStream) -> TokenStream {
