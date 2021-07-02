@@ -110,10 +110,10 @@ impl<T: Model> Component for Field<T> {
     fn view(&self) -> Html {
         html! {
             <input
-                class=self.class()
-                id=self.field_name
-                type=self.input_type
-                placeholder=self.placeholder
+                class=self.class().to_string()
+                id=self.field_name.clone()
+                type=self.input_type.clone()
+                placeholder=self.placeholder.clone()
                 value=self.form.field_value(&self.field_name)
                 oninput=self.link.callback(|e: InputData| FieldMessage::OnInput(e))
             />
