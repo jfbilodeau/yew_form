@@ -62,8 +62,8 @@ impl<T: Model + Clone> Component for CheckBox<T> {
         html! {
             <input
                 type="checkbox"
-                value=self.props.field_name
-                onclick=self.link.callback(|e| CheckBoxMessage::OnToggle)
+                value=self.props.field_name.clone()
+                onclick=self.link.callback(|_e| CheckBoxMessage::OnToggle)
                 checked=self.value()
                 class="form-check-input form-input"
              />
