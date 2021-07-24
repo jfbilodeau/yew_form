@@ -19,6 +19,12 @@ pub struct FieldProperties<T: Model> {
     pub form: Form<T>,
     #[prop_or_else(String::new)]
     pub placeholder: String,
+    #[prop_or_else(|| { "form-control".to_owned() })]
+    pub class: String,
+    #[prop_or_else(|| { "is-invalid".to_owned() })]
+    pub class_invalid: String,
+    #[prop_or_else(|| { "is-valid".to_owned() })]
+    pub class_valid: String,
     #[prop_or_else(Callback::noop)]
     pub oninput: Callback<InputData>,
 }
@@ -29,6 +35,9 @@ pub struct Field<T: Model> {
     pub field_name: String,
     pub form: Form<T>,
     pub placeholder: String,
+    pub class: String,
+    pub class_invalid: String,
+    pub class_valid: String,
     pub oninput: Callback<InputData>,
 }
 
@@ -37,16 +46,16 @@ impl<T: Model> Field<T> {
         &self.field_name
     }
 
-    pub fn class(&self) -> &str {
+    pub fn class(&self) -> String {
         let s = self.form.state();
         let field = s.field(&self.field_name);
 
         if field.dirty && field.valid {
-            "form-control is-valid"
+            format!("{} {}", self.class, self.class_valid)
         } else if field.dirty {
-            "form-control is-invalid"
+            format!("{} {}", self.class, self.class_invalid)
         } else {
-            "form-control"
+            self.class.to_owned()
         }
     }
 
@@ -80,6 +89,9 @@ impl<T: Model> Component for Field<T> {
             form: props.form,
             placeholder: String::from(props.placeholder),
             oninput: props.oninput,
+            class: props.class,
+            class_invalid: props.class_invalid,
+            class_valid: props.class_valid,
         };
 
         if form_field.input_type == "" {

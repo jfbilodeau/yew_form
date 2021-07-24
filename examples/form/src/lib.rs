@@ -124,11 +124,16 @@ impl Component for App {
                         self.form.field_value("last_name"))}</p>
                 <form>
                     // TODO: support additional attributes
-                    // TODO: Remove hard-coded Bootstrap classes
                     // TODO: Update form without needing oninput
                     <div class="form-group">
                         <label for="first_name">{"First Name: "}</label>
-                        <Field<Registration> form=form field_name="first_name" oninput=cb.clone() />
+                        <Field<Registration>
+                                form=form
+                                field_name="first_name"
+                                class="form-control blue foo bar"
+                                class_invalid="is-invalid very-wrong"
+                                class_valid="is-valid green"
+                                oninput=cb.clone() />
                         <div class="invalid-feedback">
                             {form.field_message("first_name")}
                         </div>
