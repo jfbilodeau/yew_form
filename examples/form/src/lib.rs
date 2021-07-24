@@ -128,28 +128,28 @@ impl Component for App {
                     // TODO: Update form without needing oninput
                     <div class="form-group">
                         <label for="first_name">{"First Name: "}</label>
-                        <Field<Registration> form=form.clone() field_name="first_name" oninput=cb.clone() />
+                        <Field<Registration> form=form field_name="first_name" oninput=cb.clone() />
                         <div class="invalid-feedback">
                             {form.field_message("first_name")}
                         </div>
                     </div>
                     <div class="form-group">
                         <label for="last_name">{"Last Name: "}</label>
-                        <Field<Registration> form=form.clone() field_name="last_name" oninput=cb.clone() />
+                        <Field<Registration> form=form field_name="last_name" oninput=cb.clone() />
                         <div class="invalid-feedback">
                             {form.field_message("last_name")}
                         </div>
                     </div>
                     <div class="form-group">
                         <label for="last_name">{"Quantity: "}</label>
-                        <Field<Registration> form=form.clone() field_name="quantity" oninput=cb.clone() />
+                        <Field<Registration> form=form field_name="quantity" oninput=cb.clone() />
                         <div class="invalid-feedback">
                             {form.field_message("quantity")}
                         </div>
                     </div>
                     <div class="form-group">
                         <label for="last_name">{"Price: "}</label>
-                        <Field<Registration> form=form.clone() field_name="price" oninput=cb.clone() />
+                        <Field<Registration> form=form field_name="price" oninput=cb.clone() />
                         <div class="invalid-feedback">
                             {form.field_message("price")}
                         </div>
@@ -159,28 +159,28 @@ impl Component for App {
                     </div>
                     <div class="form-group">
                         <label for="address.street">{"Street: "}</label>
-                        <Field<Registration> form=form.clone() field_name="address.street" oninput=cb.clone() />
+                        <Field<Registration> form=form field_name="address.street" oninput=cb.clone() />
                         <div class="invalid-feedback">
                             {form.field_message("address.street")}
                         </div>
                     </div>
                     <div class="form-group">
                         <label for="address.city">{"City: "}</label>
-                        <Field<Registration> form=form.clone() field_name="address.city" oninput=cb.clone() />
+                        <Field<Registration> form=form field_name="address.city" oninput=cb.clone() />
                         <div class="invalid-feedback">
                             {form.field_message("address.city")}
                         </div>
                     </div>
                     <div class="form-group">
                         <label for="address.province">{"Province: "}</label>
-                        <Field<Registration> form=form.clone() field_name="address.province" oninput=cb.clone() />
+                        <Field<Registration> form=form field_name="address.province" oninput=cb.clone() />
                         <div class="invalid-feedback">
                             {form.field_message("address.province")}
                         </div>
                     </div>
                     <div class="form-group">
                         <label for="address.country">{"Country (optional): "}</label>
-                        <Field<Registration> form=form.clone() field_name="address.country" oninput=cb.clone() />
+                        <Field<Registration> form=form field_name="address.country" oninput=cb.clone() />
                         <div class="invalid-feedback">
                             {form.field_message("address.country")}
                         </div>
@@ -188,7 +188,7 @@ impl Component for App {
                     <div class="form-group">
                         <CheckBox<Registration>
                             field_name="accept_terms"
-                            form=form.clone()
+                            form=form
                         />
                         <label class="form-check-label" for="accept_terms">{"Accept Terms and Conditions: "}</label>
                         <div class="invalid-feedback">
