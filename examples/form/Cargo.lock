@@ -92,7 +92,7 @@ checksum = "3f9eec918d3f24069decb9af1554cad7c880e2da24a9afd88aca000531ab82c1"
 
 [[package]]
 name = "form"
-version = "0.1.7"
+version = "0.1.8"
 dependencies = [
  "lazy_static",
  "regex",
@@ -611,7 +611,7 @@ dependencies = [
 
 [[package]]
 name = "yew_form"
-version = "0.1.7"
+version = "0.1.8"
 dependencies = [
  "validator",
  "validator_derive",
@@ -620,7 +620,7 @@ dependencies = [
 
 [[package]]
 name = "yew_form_derive"
-version = "0.1.7"
+version = "0.1.8"
 dependencies = [
  "proc-macro2",
  "quote",
