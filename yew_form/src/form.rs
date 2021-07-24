@@ -17,7 +17,7 @@ impl<T: Model> Form<T> {
     }
 
     pub(crate) fn state(&self) -> Ref<FormState<T>> {
-        self.state.borrow()
+        self.state.as_ref().borrow()
     }
 
     pub(crate) fn state_mut(&mut self) -> RefMut<FormState<T>> {
@@ -29,43 +29,40 @@ impl<T: Model> Form<T> {
     }
 
     pub fn valid(&self) -> bool {
-        self.state.borrow().valid()
+        self.state().valid()
     }
 
     pub fn field_value(&self, field_name: &str) -> String {
-        self.state.borrow().field(field_name).field_value.to_owned()
+        self.state().field(field_name).field_value.to_owned()
     }
 
     pub fn field_valid(&self, field_name: &str) -> bool {
-        self.state.borrow().field_valid(field_name)
+        self.state().field_valid(field_name)
     }
 
     pub fn field_message(&self, field_name: &str) -> String {
-        self.state.borrow().field(field_name).message.to_owned()
+        self.state().field(field_name).message.to_owned()
     }
 
     pub fn set_field_value(&mut self, field_name: &str, field_value: &str) {
         self.state_mut().set_field_value(field_name, field_value);
     }
 
-    // pub fn model(&self) -> &T {
-    //     &self.state().model()
-    // }
-
-    // pub fn model_mut(&mut self) -> &mut T {
-    //     self.state_mut().model_mut()
-    // }
+    /// returns a clone of the inner model
+    pub fn model(&self) -> T {
+        self.state().model().clone()
+    }
 }
 
 impl<T: Model> PartialEq for Form<T> {
     fn eq(&self, other: &Self) -> bool {
         Rc::ptr_eq(&self.state, &other.state)
             ||
-        self.state.borrow().model == other.state.borrow().model
+        self.state().model == other.state().model
     }
 
     fn ne(&self, other: &Self) -> bool {
-        self.state.borrow().model != other.state.borrow().model
+        self.state().model != other.state().model
     }
 }
 

@@ -114,81 +114,85 @@ impl Component for App {
     }
 
     fn view(&self) -> Html {
+        let cb = self.link.callback(|_: InputData| AppMessage::Update);
+        let form = &self.form;
         html! {
             <div class="container-sm">
                 <h1>{"Yew Form Example"}</h1>
-                <p>{format!("Hello, {} {} and welcome to Yew Form!", self.form.model().first_name, self.form.model().last_name)}</p>
+                <p>{format!("Hello, {} {} and welcome to Yew Form!",
+                        self.form.field_value("first_name"),
+                        self.form.field_value("last_name"))}</p>
                 <form>
                     // TODO: support additional attributes
                     // TODO: Remove hard-coded Bootstrap classes
                     // TODO: Update form without needing oninput
                     <div class="form-group">
                         <label for="first_name">{"First Name: "}</label>
-                        <Field<Registration> form=&self.form field_name="first_name" oninput=self.link.callback(|_: InputData| AppMessage::Update) />
+                        <Field<Registration> form=form.clone() field_name="first_name" oninput=cb.clone() />
                         <div class="invalid-feedback">
-                            {&self.form.field_message("first_name")}
+                            {form.field_message("first_name")}
                         </div>
                     </div>
                     <div class="form-group">
                         <label for="last_name">{"Last Name: "}</label>
-                        <Field<Registration> form=&self.form field_name="last_name" oninput=self.link.callback(|_: InputData| AppMessage::Update) />
+                        <Field<Registration> form=form.clone() field_name="last_name" oninput=cb.clone() />
                         <div class="invalid-feedback">
-                            {&self.form.field_message("last_name")}
+                            {form.field_message("last_name")}
                         </div>
                     </div>
                     <div class="form-group">
                         <label for="last_name">{"Quantity: "}</label>
-                        <Field<Registration> form=&self.form field_name="quantity" oninput=self.link.callback(|_: InputData| AppMessage::Update) />
+                        <Field<Registration> form=form.clone() field_name="quantity" oninput=cb.clone() />
                         <div class="invalid-feedback">
-                            {&self.form.field_message("quantity")}
+                            {form.field_message("quantity")}
                         </div>
                     </div>
                     <div class="form-group">
                         <label for="last_name">{"Price: "}</label>
-                        <Field<Registration> form=&self.form field_name="price" oninput=self.link.callback(|_: InputData| AppMessage::Update) />
+                        <Field<Registration> form=form.clone() field_name="price" oninput=cb.clone() />
                         <div class="invalid-feedback">
-                            {&self.form.field_message("price")}
+                            {form.field_message("price")}
                         </div>
                     </div>
                     <div>
-                        {"Total: "}{format!("{:.2}", self.form.model().total())}
+                        {"Total: "}{format!("{:.2}", form.model().total())}
                     </div>
                     <div class="form-group">
                         <label for="address.street">{"Street: "}</label>
-                        <Field<Registration> form=&self.form field_name="address.street" oninput=self.link.callback(|_: InputData| AppMessage::Update) />
+                        <Field<Registration> form=form.clone() field_name="address.street" oninput=cb.clone() />
                         <div class="invalid-feedback">
-                            {&self.form.field_message("address.street")}
+                            {form.field_message("address.street")}
                         </div>
                     </div>
                     <div class="form-group">
                         <label for="address.city">{"City: "}</label>
-                        <Field<Registration> form=&self.form field_name="address.city" oninput=self.link.callback(|_: InputData| AppMessage::Update) />
+                        <Field<Registration> form=form.clone() field_name="address.city" oninput=cb.clone() />
                         <div class="invalid-feedback">
-                            {&self.form.field_message("address.city")}
+                            {form.field_message("address.city")}
                         </div>
                     </div>
                     <div class="form-group">
                         <label for="address.province">{"Province: "}</label>
-                        <Field<Registration> form=&self.form field_name="address.province" oninput=self.link.callback(|_: InputData| AppMessage::Update) />
+                        <Field<Registration> form=form.clone() field_name="address.province" oninput=cb.clone() />
                         <div class="invalid-feedback">
-                            {&self.form.field_message("address.province")}
+                            {form.field_message("address.province")}
                         </div>
                     </div>
                     <div class="form-group">
                         <label for="address.country">{"Country (optional): "}</label>
-                        <Field<Registration> form=&self.form field_name="address.country" oninput=self.link.callback(|_: InputData| AppMessage::Update) />
+                        <Field<Registration> form=form.clone() field_name="address.country" oninput=cb.clone() />
                         <div class="invalid-feedback">
-                            {&self.form.field_message("address.country")}
+                            {form.field_message("address.country")}
                         </div>
                     </div>
                     <div class="form-group">
                         <CheckBox<Registration>
                             field_name="accept_terms"
-                            form=&self.form
+                            form=form.clone()
                         />
                         <label class="form-check-label" for="accept_terms">{"Accept Terms and Conditions: "}</label>
                         <div class="invalid-feedback">
-                          {&self.form.field_message("accept_terms")}
+                          {form.field_message("accept_terms")}
                         </div>
                     </div>
                     <div class="form-group">
@@ -197,13 +201,13 @@ impl Component for App {
                 </form>
                 <div hidden=!self.submitted>
                     <h2>{"Form data"}</h2>
-                    <p>{"First Name: "}{&self.form.model().first_name}</p>
-                    <p>{"Last Name: "}{&self.form.model().last_name}</p>
-                    <p>{"Street: "}{&self.form.model().address.street}</p>
-                    <p>{"City: "}{&self.form.model().address.city}</p>
-                    <p>{"Province: "}{&self.form.model().address.province}</p>
-                    <p>{"Country: "}{&self.form.model().address.country}</p>
-                    <p>{"Accepted Terms: "}{self.form.model().accept_terms}</p>
+                    <p>{"First Name: "}{&form.model().first_name}</p>
+                    <p>{"Last Name: "}{&form.model().last_name}</p>
+                    <p>{"Street: "}{&form.model().address.street}</p>
+                    <p>{"City: "}{&form.model().address.city}</p>
+                    <p>{"Province: "}{&form.model().address.province}</p>
+                    <p>{"Country: "}{&form.model().address.country}</p>
+                    <p>{"Accepted Terms: "}{form.model().accept_terms}</p>
                 </div>
             </div>
         }
