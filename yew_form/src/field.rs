@@ -37,7 +37,7 @@ impl<T: Model> Field<T> {
         &self.field_name
     }
 
-    pub fn class(&self) -> &str {
+    pub fn class(&self) -> &'static str {
         let s = self.form.state();
         let field = s.field(&self.field_name);
 
@@ -111,9 +111,9 @@ impl<T: Model> Component for Field<T> {
         html! {
             <input
                 class=self.class()
-                id=self.field_name
-                type=self.input_type
-                placeholder=self.placeholder
+                id=self.field_name.clone()
+                type=self.input_type.clone()
+                placeholder=self.placeholder.clone()
                 value=self.form.field_value(&self.field_name)
                 oninput=self.link.callback(|e: InputData| FieldMessage::OnInput(e))
             />
