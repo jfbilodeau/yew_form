@@ -1,5 +1,5 @@
-use validator::Validate;
 use std::str::FromStr;
+use validator::Validate;
 
 pub trait FormValue {
     fn fields(&self, prefix: &str, fields: &mut Vec<String>) {
@@ -8,15 +8,13 @@ pub trait FormValue {
     }
     fn value(&self, field_path: &str) -> String;
     fn set_value(&mut self, field_path: &str, value: &str) -> Result<(), String>;
-
 }
 
-pub trait Model: FormValue + Validate + PartialEq + Clone + 'static {
-}
+pub trait Model: FormValue + Validate + PartialEq + Clone + 'static {}
 
 pub fn split_field_path(field_path: &str) -> (&str, &str) {
     if let Some(index) = field_path.find(".") {
-        (&field_path[0..index], &field_path[index+1..])
+        (&field_path[0..index], &field_path[index + 1..])
     } else {
         (field_path, "")
     }

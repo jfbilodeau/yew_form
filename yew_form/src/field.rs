@@ -1,10 +1,10 @@
-use yew::{Component, ComponentLink, Html, html, Properties, InputData, Callback, ShouldRender};
+use yew::{html, Callback, Component, ComponentLink, Html, InputData, Properties, ShouldRender};
 
-use crate::form::{Form};
-use crate::{Model};
+use crate::form::Form;
+use crate::Model;
 
 pub enum FieldMessage {
-    OnInput(InputData)
+    OnInput(InputData),
 }
 
 fn default_text() -> String {
@@ -49,7 +49,6 @@ impl<T: Model> Field<T> {
             "form-control"
         }
     }
-
 
     pub fn message(&self) -> String {
         self.form.field_message(&self.field_name())

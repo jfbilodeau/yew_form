@@ -33,7 +33,10 @@ pub fn derive_model(input: TokenStream) -> TokenStream {
                 path.to_tokens(&mut tokens);
                 tokens.to_string().replace(' ', "")
             }
-            _ => panic!("Type `{:?}` of field `{}` is not supported", field.ty, field_ident),
+            _ => panic!(
+                "Type `{:?}` of field `{}` is not supported",
+                field.ty, field_ident
+            ),
         };
 
         field_idents.push(field_ident);
@@ -88,4 +91,3 @@ pub fn derive_model(input: TokenStream) -> TokenStream {
 
     impl_ast.into()
 }
-
