@@ -94,7 +94,8 @@ Fields can then be added to the form as follows:
 ```html
 <Field<Registration> 
     form=&self.form 
-    field_name="first_name" 
+    field_name="first_name"
+    autocomplete="given-name"
     oninput=self.link.callback(|_: InputData| AppMessage::Update) />
 
 <!-- here we use custom css classes -->
@@ -135,6 +136,7 @@ Todo/Wish List:
 ### 0.1.8
 - Remove hardcoded Bootstrap css classes
 - Fix `examples/form`
+- Add `autocomplete` attribute
 
 ### 0.1.7
 - Remove `#![feature(get_mut_unchecked)]` from code (Thanks [L0g4n](https://github.com/L0g4n))

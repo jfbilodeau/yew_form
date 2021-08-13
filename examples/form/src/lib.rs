@@ -7,10 +7,10 @@ extern crate yew_form;
 #[macro_use]
 extern crate yew_form_derive;
 
-use wasm_bindgen::prelude::*;
 use regex::Regex;
 use validator::{Validate, ValidationError};
-use yew::{MouseEvent, Component, ComponentLink, Html, html, InputData};
+use wasm_bindgen::prelude::*;
+use yew::{html, Component, ComponentLink, Html, InputData, MouseEvent};
 
 use yew_form::{CheckBox, Field, Form};
 
@@ -28,11 +28,11 @@ fn must_be_true(value: &bool) -> Result<(), ValidationError> {
 
 #[derive(Model, Validate, PartialEq, Clone)]
 struct Address {
-    #[validate(length(min = 1, message="Street is required"))]
+    #[validate(length(min = 1, message = "Street is required"))]
     street: String,
-    #[validate(length(min = 1, message="City name is required"))]
+    #[validate(length(min = 1, message = "City name is required"))]
     city: String,
-    #[validate(regex(path="PROVINCE_RE", message="Enter 2 digit province code"))]
+    #[validate(regex(path = "PROVINCE_RE", message = "Enter 2 digit province code"))]
     province: String,
     postal_code: String,
     country: String,
@@ -40,9 +40,9 @@ struct Address {
 
 #[derive(Model, Validate, PartialEq, Clone)]
 struct Registration {
-    #[validate(length(min = 1, message="First name is required"))]
+    #[validate(length(min = 1, message = "First name is required"))]
     first_name: String,
-    #[validate(length(min = 1, message="Last name is required"))]
+    #[validate(length(min = 1, message = "Last name is required"))]
     last_name: String,
     quantity: u32,
     price: f64,
@@ -129,6 +129,7 @@ impl Component for App {
                         <label for="first_name">{"First Name: "}</label>
                         <Field<Registration>
                                 form=form
+                                autocomplete="given_name"
                                 field_name="first_name"
                                 class="form-control blue foo bar"
                                 class_invalid="is-invalid very-wrong"
@@ -224,7 +225,6 @@ pub fn run_app() {
     yew::start_app::<App>();
 }
 
-
 #[cfg(test)]
 mod tests {
     use crate::{Address, Registration};
@@ -237,7 +237,7 @@ mod tests {
             city: "city_i".to_string(),
             province: "prov_i".to_string(),
             postal_code: "po_i".to_string(),
-            country: "country_i".to_string()
+            country: "country_i".to_string(),
         };
 
         let mut fields = vec![];
@@ -246,7 +246,10 @@ mod tests {
         assert_eq!(fields.len(), 5);
         assert!(fields.contains(&String::from("street")));
 
-        assert_eq!(address.value("street"), String::from(address.street.clone()));
+        assert_eq!(
+            address.value("street"),
+            String::from(address.street.clone())
+        );
 
         assert!(address.set_value("street", "street_o").is_ok());
 
@@ -265,9 +268,9 @@ mod tests {
                 city: "city_i".to_string(),
                 province: "prov_i".to_string(),
                 postal_code: "po_i".to_string(),
-                country: "country_i".to_string()
+                country: "country_i".to_string(),
             },
-            accept_terms: false
+            accept_terms: false,
         };
 
         let mut fields = vec![];
@@ -286,12 +289,17 @@ mod tests {
         assert!(result.is_ok());
         assert_eq!(&registration.value("quantity"), "12");
 
-
-        assert_eq!(registration.value("address.street"), String::from(registration.address.street.clone()));
+        assert_eq!(
+            registration.value("address.street"),
+            String::from(registration.address.street.clone())
+        );
 
         registration.set_value("address.street", "street_o");
 
-        assert_eq!(registration.address.value("street"), String::from("street_o"));
+        assert_eq!(
+            registration.address.value("street"),
+            String::from("street_o")
+        );
     }
 
     #[test]
@@ -302,7 +310,7 @@ mod tests {
             city: "city_i".to_string(),
             province: "prov_i".to_string(),
             postal_code: "po_i".to_string(),
-            country: "country_i".to_string()
+            country: "country_i".to_string(),
         };
 
         address.value("not_exist");

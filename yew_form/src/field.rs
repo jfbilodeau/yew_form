@@ -1,10 +1,10 @@
-use yew::{Component, ComponentLink, Html, html, Properties, InputData, Callback, ShouldRender};
+use yew::{html, Callback, Component, ComponentLink, Html, InputData, Properties, ShouldRender};
 
-use crate::form::{Form};
-use crate::{Model};
+use crate::form::Form;
+use crate::Model;
 
 pub enum FieldMessage {
-    OnInput(InputData)
+    OnInput(InputData),
 }
 
 fn default_text() -> String {
@@ -13,6 +13,8 @@ fn default_text() -> String {
 
 #[derive(Properties, PartialEq, Clone)]
 pub struct FieldProperties<T: Model> {
+    #[prop_or_else(|| { "off".to_owned() })]
+    pub autocomplete: String,
     #[prop_or_else(default_text)]
     pub input_type: String,
     pub field_name: String,
@@ -31,6 +33,7 @@ pub struct FieldProperties<T: Model> {
 
 pub struct Field<T: Model> {
     link: ComponentLink<Self>,
+    pub autocomplete: String,
     pub input_type: String,
     pub field_name: String,
     pub form: Form<T>,
@@ -59,7 +62,6 @@ impl<T: Model> Field<T> {
         }
     }
 
-
     pub fn message(&self) -> String {
         self.form.field_message(&self.field_name())
     }
@@ -84,6 +86,7 @@ impl<T: Model> Component for Field<T> {
     fn create(props: Self::Properties, link: ComponentLink<Self>) -> Self {
         let mut form_field = Self {
             link,
+            autocomplete: String::from(props.autocomplete),
             input_type: String::from(props.input_type),
             field_name: String::from(props.field_name),
             form: props.form,
@@ -126,6 +129,7 @@ impl<T: Model> Component for Field<T> {
                 id=self.field_name.clone()
                 type=self.input_type.clone()
                 placeholder=self.placeholder.clone()
+                autocomplete=self.autocomplete.clone()
                 value=self.form.field_value(&self.field_name)
                 oninput=self.link.callback(|e: InputData| FieldMessage::OnInput(e))
             />
