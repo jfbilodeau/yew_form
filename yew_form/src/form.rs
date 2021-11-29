@@ -1,8 +1,8 @@
+use std::cell::{Ref, RefCell, RefMut};
 use std::rc::Rc;
-use std::cell::{Ref, RefMut, RefCell};
 
 use crate::form_state::FormState;
-use crate::{Model};
+use crate::Model;
 
 #[derive(Clone)]
 pub struct Form<T: Model> {
@@ -60,8 +60,7 @@ impl<T: Model> Form<T> {
 impl<T: Model> PartialEq for Form<T> {
     fn eq(&self, other: &Self) -> bool {
         Rc::ptr_eq(&self.state, &other.state)
-            ||
-        self.state.borrow().model == other.state.borrow().model
+            || self.state.borrow().model == other.state.borrow().model
     }
 
     fn ne(&self, other: &Self) -> bool {
