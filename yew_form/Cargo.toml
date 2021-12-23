@@ -14,4 +14,4 @@ categories = [ "web-programming" ]
 [dependencies]
 validator = "0.14.0"
 validator_derive = "0.14.0"
-yew = "0.18"
+yew = "0.19"
