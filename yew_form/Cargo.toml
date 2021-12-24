@@ -5,7 +5,7 @@ authors = ["J-F Bilodeau <jfbilodeau@chronogears.com>"]
 edition = "2018"
 description = "Bringing MVC to Yew! A set mildly opinionated Yew component to map and validate a model to a HTML form"
 license = "MIT"
-repository = "https://github.com/jfbilodeau/yew_form"
+repository = "https://github.com/thebearjew/yew_form"
 readme = "../README.md"
 categories = [ "web-programming" ]
 
@@ -15,7 +15,8 @@ categories = [ "web-programming" ]
 wasm-bindgen = "0.2"
 validator = "0.14.0"
 validator_derive = "0.14.0"
-yew = "0.19"
+# yew = "0.19"
+yew = {git = "https://github.com/yewstack/yew" } # Yew @ next
 
 [dependencies.web-sys]
 version = "0.3"
