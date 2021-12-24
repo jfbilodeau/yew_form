@@ -1,10 +1,10 @@
-use yew::{html, Callback, Component, ComponentLink, Html, InputData, Properties, ShouldRender};
+use yew::{html, Callback, Component, Context, Html, InputEvent, Properties};
 
 use crate::form::Form;
 use crate::Model;
 
 pub enum FieldMessage {
-    OnInput(InputData),
+    OnInput(InputEvent),
 }
 
 fn default_text() -> String {
@@ -28,11 +28,10 @@ pub struct FieldProperties<T: Model> {
     #[prop_or_else(|| { "is-valid".to_owned() })]
     pub class_valid: String,
     #[prop_or_else(Callback::noop)]
-    pub oninput: Callback<InputData>,
+    pub oninput: Callback<InputEvent>,
 }
 
 pub struct Field<T: Model> {
-    link: ComponentLink<Self>,
     pub autocomplete: String,
     pub input_type: String,
     pub field_name: String,
@@ -41,7 +40,6 @@ pub struct Field<T: Model> {
     pub class: String,
     pub class_invalid: String,
     pub class_valid: String,
-    pub oninput: Callback<InputData>,
 }
 
 impl<T: Model> Field<T> {
@@ -83,18 +81,16 @@ impl<T: Model> Component for Field<T> {
     type Message = FieldMessage;
     type Properties = FieldProperties<T>;
 
-    fn create(props: Self::Properties, link: ComponentLink<Self>) -> Self {
+    fn create(ctx: &Context<Self>) -> Self {
         let mut form_field = Self {
-            link,
-            autocomplete: String::from(props.autocomplete),
-            input_type: String::from(props.input_type),
-            field_name: String::from(props.field_name),
-            form: props.form,
-            placeholder: String::from(props.placeholder),
-            oninput: props.oninput,
-            class: props.class,
-            class_invalid: props.class_invalid,
-            class_valid: props.class_valid,
+            autocomplete: String::from(&ctx.props().autocomplete),
+            input_type: String::from(&ctx.props().input_type),
+            field_name: String::from(&ctx.props().field_name),
+            form: ctx.props().form.clone(),
+            placeholder: String::from(&ctx.props().placeholder),
+            class: ctx.props().class.clone(),
+            class_invalid: ctx.props().class_invalid.clone(),
+            class_valid: ctx.props().class_valid.clone(),
         };
 
         if form_field.input_type == "" {
@@ -104,34 +100,37 @@ impl<T: Model> Component for Field<T> {
         form_field
     }
 
-    fn update(&mut self, msg: Self::Message) -> ShouldRender {
+    fn update(&mut self, ctx: &Context<Self>, msg: Self::Message) -> bool {
         match msg {
+            // TODO @Jacob -> we need to use something like gloo to access the DOM and get the
+            // target of the InputEvent in order to access its value. Then we can call
+            // state.set_field_value() with input_target.value
             FieldMessage::OnInput(input_data) => {
                 let mut state = self.form.state_mut();
-                state.set_field_value(&self.field_name, &input_data.value);
+                // state.set_field_value(&self.field_name, &input_data.value);
                 state.update_validation_field(&self.field_name);
                 drop(state);
 
-                self.oninput.emit(input_data);
+                ctx.props().oninput.emit(input_data);
                 true
             }
         }
     }
 
-    fn change(&mut self, _props: Self::Properties) -> ShouldRender {
+    fn changed(&mut self, _ctx: &Context<Self>) -> bool {
         true
     }
 
-    fn view(&self) -> Html {
+    fn view(&self, ctx: &Context<Self>) -> Html {
         html! {
             <input
-                class=self.class().to_string()
-                id=self.field_name.clone()
-                type=self.input_type.clone()
-                placeholder=self.placeholder.clone()
-                autocomplete=self.autocomplete.clone()
-                value=self.form.field_value(&self.field_name)
-                oninput=self.link.callback(|e: InputData| FieldMessage::OnInput(e))
+                class={ self.class().to_string() }
+                id={ self.field_name.clone() }
+                type={ self.input_type.clone() }
+                placeholder={ self.placeholder.clone() }
+                autocomplete={ self.autocomplete.clone() }
+                value={ self.form.field_value(&self.field_name) }
+                oninput={ ctx.link().callback(|e: InputEvent| FieldMessage::OnInput(e)) }
             />
         }
     }
