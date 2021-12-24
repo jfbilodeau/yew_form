@@ -1,16 +1,16 @@
+use std::cell::{Ref, RefCell, RefMut};
 use std::rc::Rc;
-use std::cell::{Ref, RefMut, RefCell};
 use yew::html::ImplicitClone;
 
 use crate::form_state::FormState;
-use crate::{Model};
+use crate::Model;
 
 #[derive(Clone)]
 pub struct Form<T: Model> {
     state: Rc<RefCell<FormState<T>>>,
 }
 
-impl<T: Model> ImplicitClone for Form<T> { }
+impl<T: Model> ImplicitClone for Form<T> {}
 
 impl<T: Model> Form<T> {
     pub fn new(model: T) -> Form<T> {
@@ -59,9 +59,7 @@ impl<T: Model> Form<T> {
 
 impl<T: Model> PartialEq for Form<T> {
     fn eq(&self, other: &Self) -> bool {
-        Rc::ptr_eq(&self.state, &other.state)
-            ||
-        self.state().model == other.state().model
+        Rc::ptr_eq(&self.state, &other.state) || self.state().model == other.state().model
     }
 
     fn ne(&self, other: &Self) -> bool {
