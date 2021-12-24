@@ -66,11 +66,11 @@ impl<T: Model> Field<T> {
     }
 
     pub fn message(&self) -> String {
-        self.form.field_message(&self.field_name())
+        self.form.field_message(self.field_name())
     }
 
     pub fn valid(&self) -> bool {
-        self.form.field_valid(&self.field_name())
+        self.form.field_valid(self.field_name())
     }
 
     pub fn dirty(&self) -> bool {
@@ -106,7 +106,7 @@ impl<T: Model> Component for Field<T> {
             class_valid: ctx.props().class_valid.clone(),
         };
 
-        if form_field.input_type == "" {
+        if form_field.input_type.is_empty() {
             form_field.input_type = String::from("text");
         }
 
