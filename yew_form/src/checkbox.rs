@@ -39,7 +39,7 @@ impl<T: Model + Clone> Component for CheckBox<T> {
 
     fn create(ctx: &yew::Context<Self>) -> Self {
         Self {
-            props: *ctx.props(),
+            props: ctx.props().clone(),
         }
     }
 
@@ -48,13 +48,13 @@ impl<T: Model + Clone> Component for CheckBox<T> {
             CheckBoxMessage::OnToggle => {
                 let value = !self.value();
                 self.set_value(value);
-                self.props.ontoggle.emit(value);
+                ctx.props().ontoggle.emit(value);
                 true
             }
         }
     }
 
-    fn changed(&mut self, ctx: &yew::Context<Self>) -> bool {
+    fn changed(&mut self, _ctx: &yew::Context<Self>) -> bool {
         true
     }
 
