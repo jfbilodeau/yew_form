@@ -1,10 +1,15 @@
-use yew::{html, Callback, Component, Context, Html, InputEvent, Properties};
+use wasm_bindgen::JsCast;
+use wasm_bindgen::UnwrapThrowExt;
+use web_sys::Event;
+use web_sys::HtmlInputElement;
+use web_sys::InputEvent;
+use yew::{html, Callback, Component, Context, Html, Properties};
 
 use crate::form::Form;
 use crate::Model;
 
 pub enum FieldMessage {
-    OnInput(InputEvent),
+    OnInput(String),
 }
 
 fn default_text() -> String {
@@ -28,7 +33,7 @@ pub struct FieldProperties<T: Model> {
     #[prop_or_else(|| { "is-valid".to_owned() })]
     pub class_valid: String,
     #[prop_or_else(Callback::noop)]
-    pub oninput: Callback<InputEvent>,
+    pub oninput: Callback<String>,
 }
 
 pub struct Field<T: Model> {
@@ -77,6 +82,14 @@ impl<T: Model> Field<T> {
     }
 }
 
+fn get_input_value(e: InputEvent) -> String {
+    let event: Event = e.dyn_into().unwrap_throw();
+    let event_target = event.target().unwrap_throw();
+    let target: HtmlInputElement = event_target.dyn_into().unwrap_throw();
+    web_sys::console::log_1(&target.value().into());
+    target.value()
+}
+
 impl<T: Model> Component for Field<T> {
     type Message = FieldMessage;
     type Properties = FieldProperties<T>;
@@ -105,13 +118,13 @@ impl<T: Model> Component for Field<T> {
             // TODO @Jacob -> we need to use something like gloo to access the DOM and get the
             // target of the InputEvent in order to access its value. Then we can call
             // state.set_field_value() with input_target.value
-            FieldMessage::OnInput(input_data) => {
+            FieldMessage::OnInput(value) => {
                 let mut state = self.form.state_mut();
-                // state.set_field_value(&self.field_name, &input_data.value);
+                state.set_field_value(&self.field_name, &value);
                 state.update_validation_field(&self.field_name);
                 drop(state);
 
-                ctx.props().oninput.emit(input_data);
+                ctx.props().oninput.emit(value);
                 true
             }
         }
@@ -130,7 +143,9 @@ impl<T: Model> Component for Field<T> {
                 placeholder={ self.placeholder.clone() }
                 autocomplete={ self.autocomplete.clone() }
                 value={ self.form.field_value(&self.field_name) }
-                oninput={ ctx.link().callback(|e: InputEvent| FieldMessage::OnInput(e)) }
+                oninput={ ctx.link().callback(|e: InputEvent| {
+                    FieldMessage::OnInput(get_input_value(e))
+                })}
             />
         }
     }
