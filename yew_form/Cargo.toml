@@ -22,4 +22,5 @@ yew = {git = "https://github.com/yewstack/yew" } # Yew @ next
 version = "0.3"
 features = [
 "HtmlInputElement",
+"HtmlSelectElement",
 ]

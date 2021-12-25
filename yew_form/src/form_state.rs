@@ -1,6 +1,6 @@
-use validator::{ValidationErrors, ValidationErrorsKind};
-use crate::{Model};
 use crate::form_field::FormField;
+use crate::Model;
+use validator::{ValidationErrors, ValidationErrorsKind};
 
 pub struct FormState<T: Model> {
     pub(crate) model: T,
@@ -15,7 +15,10 @@ impl<T: Model> FormState<T> {
 
         let form = FormState {
             model: model.clone(),
-            fields: fields.iter().map(|f| FormField::new(f, &model.value(f))).collect()
+            fields: fields
+                .iter()
+                .map(|f| FormField::new(f, &model.value(f)))
+                .collect(),
         };
 
         form
@@ -30,11 +33,17 @@ impl<T: Model> FormState<T> {
     }
 
     pub(crate) fn field(&self, name: &str) -> &FormField {
-        self.fields.iter().find(|&f| f.field_name == name).expect(&format!("Field {} does not exist", name))
+        self.fields
+            .iter()
+            .find(|&f| f.field_name == name)
+            .unwrap_or_else(|| panic!("Field {} does not exist", name))
     }
 
     pub(crate) fn field_mut(&mut self, name: &str) -> &mut FormField {
-        self.fields.iter_mut().find(|f| f.field_name == name).expect(&format!("Field {} does not exist", name))
+        self.fields
+            .iter_mut()
+            .find(|f| f.field_name == name)
+            .unwrap_or_else(|| panic!("Field {} does not exist", name))
     }
 
     pub fn field_value(&self, field_name: &str) -> &str {
@@ -55,10 +64,10 @@ impl<T: Model> FormState<T> {
                 Ok(()) => {
                     field.valid = true;
                     field.message = String::new();
-                },
+                }
                 Err(e) => {
                     field.valid = false;
-                    field.message = String::from(e);
+                    field.message = e;
                 }
             }
         }
@@ -98,7 +107,6 @@ impl<T: Model> FormState<T> {
         }
     }
 
-
     pub(crate) fn update_validation_field(&mut self, field: &str) {
         match self.model.validate() {
             Ok(()) => self.clear_errors(),
@@ -113,10 +121,15 @@ impl<T: Model> FormState<T> {
             field.message = "".to_string();
         }
     }
-    
-    fn add_errors(&mut self, prefix: &str, field_name_filter: Option<&str>, errors: &ValidationErrors) {
+
+    fn add_errors(
+        &mut self,
+        prefix: &str,
+        field_name_filter: Option<&str>,
+        errors: &ValidationErrors,
+    ) {
         fn generate_field_name(prefix: &str, field_name: &str) -> String {
-            if prefix == "" {
+            if prefix.is_empty() {
                 String::from(field_name)
             } else {
                 format!("{}.{}", prefix, field_name)
@@ -130,11 +143,13 @@ impl<T: Model> FormState<T> {
                     continue;
                 }
             }
-            
+
             match error {
-                ValidationErrorsKind::Struct(errors) => {
-                    self.add_errors(&generate_field_name(prefix, field_name), field_name_filter, errors)
-                }
+                ValidationErrorsKind::Struct(errors) => self.add_errors(
+                    &generate_field_name(prefix, field_name),
+                    field_name_filter,
+                    errors,
+                ),
                 ValidationErrorsKind::List(_) => { /* Ignore? */ }
                 ValidationErrorsKind::Field(errors) => {
                     let field = self.field_mut(&generate_field_name(prefix, field_name));
