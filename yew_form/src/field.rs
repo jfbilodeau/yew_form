@@ -3,7 +3,7 @@ use wasm_bindgen::UnwrapThrowExt;
 use web_sys::Event;
 use web_sys::HtmlInputElement;
 use web_sys::InputEvent;
-use yew::{html, Callback, Component, Context, Html, Properties};
+use yew::{classes, html, Callback, Classes, Component, Context, Html, Properties};
 
 use crate::form::Form;
 use crate::Model;
@@ -26,12 +26,12 @@ pub struct FieldProperties<T: Model> {
     pub form: Form<T>,
     #[prop_or_else(String::new)]
     pub placeholder: String,
-    #[prop_or_else(|| { "form-control".to_owned() })]
-    pub class: String,
-    #[prop_or_else(|| { "is-invalid".to_owned() })]
-    pub class_invalid: String,
-    #[prop_or_else(|| { "is-valid".to_owned() })]
-    pub class_valid: String,
+    #[prop_or_else(|| { classes!("form-control") })]
+    pub class: Classes,
+    #[prop_or_else(|| { classes!("is-invalid") })]
+    pub class_invalid: Classes,
+    #[prop_or_else(|| { classes!("is-valid") })]
+    pub class_valid: Classes,
     #[prop_or_else(Callback::noop)]
     pub oninput: Callback<InputEvent>,
 }
@@ -42,9 +42,9 @@ pub struct Field<T: Model> {
     pub field_name: String,
     pub form: Form<T>,
     pub placeholder: String,
-    pub class: String,
-    pub class_invalid: String,
-    pub class_valid: String,
+    pub class: Classes,
+    pub class_invalid: Classes,
+    pub class_valid: Classes,
 }
 
 impl<T: Model> Field<T> {
@@ -52,14 +52,14 @@ impl<T: Model> Field<T> {
         &self.field_name
     }
 
-    pub fn class(&self) -> String {
+    pub fn class(&self) -> Classes {
         let s = self.form.state();
         let field = s.field(&self.field_name);
 
         if field.dirty && field.valid {
-            format!("{} {}", self.class, self.class_valid)
+            classes!(self.class.clone(), self.class_valid.clone())
         } else if field.dirty {
-            format!("{} {}", self.class, self.class_invalid)
+            classes!(self.class.clone(), self.class_invalid.clone())
         } else {
             self.class.to_owned()
         }
