@@ -1,39 +1,40 @@
 use wasm_bindgen::JsCast;
 use wasm_bindgen::UnwrapThrowExt;
 use web_sys::Event;
-use web_sys::HtmlSelectElement;
+use web_sys::HtmlInputElement;
 use web_sys::InputEvent;
-use yew::{classes, html, Callback, Children, Classes, Component, Context, Html, Properties};
+use yew::{classes, html, Callback, Classes, Component, Context, Html, Properties};
 
 use crate::form::Form;
 use crate::Model;
 
-pub enum SelectMessage {
+pub enum FileMessage {
     OnInput(InputEvent),
 }
 
 #[derive(Properties, PartialEq, Clone)]
-pub struct SelectPropeties<T: Model> {
+pub struct FilePropeties<T: Model> {
     pub form: Form<T>,
     pub field_name: String,
-    #[prop_or_else(|| "off".to_owned() )]
-    pub autocomplete: String,
     #[prop_or_else(|| false )]
     pub disabled: bool,
     #[prop_or_else(|| false )]
     pub multiple: bool,
     #[prop_or_default]
+    pub accept: String,
+    #[prop_or_default]
+    pub capture: String,
+    #[prop_or_default]
     pub class: Classes,
     #[prop_or_default]
     pub class_valid: Classes,
     #[prop_or_default]
     pub class_invalid: Classes,
-    pub children: Children,
     #[prop_or_else(Callback::noop)]
     pub oninput: Callback<InputEvent>,
 }
 
-pub struct Select<T: Model> {
+pub struct File<T: Model> {
     pub form: Form<T>,
     pub field_name: String,
     pub class: Classes,
@@ -41,7 +42,7 @@ pub struct Select<T: Model> {
     pub class_invalid: Classes,
 }
 
-impl<T: Model> Select<T> {
+impl<T: Model> File<T> {
     pub fn field_name(&self) -> &str {
         &self.field_name
     }
@@ -78,15 +79,14 @@ impl<T: Model> Select<T> {
     pub fn get_select_value(&self, e: InputEvent) -> String {
         let event: Event = e.dyn_into().unwrap_throw();
         let event_target = event.target().unwrap_throw();
-        let target: HtmlSelectElement = event_target.dyn_into().unwrap_throw();
-        web_sys::console::log_1(&target.value().into());
+        let target: HtmlInputElement = event_target.dyn_into().unwrap_throw();
         target.value()
     }
 }
 
-impl<T: Model> Component for Select<T> {
-    type Message = SelectMessage;
-    type Properties = SelectPropeties<T>;
+impl<T: Model> Component for File<T> {
+    type Message = FileMessage;
+    type Properties = FilePropeties<T>;
 
     fn create(ctx: &Context<Self>) -> Self {
         Self {
@@ -100,10 +100,10 @@ impl<T: Model> Component for Select<T> {
 
     fn update(&mut self, ctx: &Context<Self>, msg: Self::Message) -> bool {
         match msg {
-            SelectMessage::OnInput(event) => {
+            FileMessage::OnInput(event) => {
                 let value = self.get_select_value(event.clone());
                 let mut state = self.form.state_mut();
-                state.set_field_value(&ctx.props().field_name, &value);
+                state.set_field_value(&self.field_name, &value);
                 state.update_validation_field(&self.field_name);
                 drop(state);
                 ctx.props().oninput.emit(event);
@@ -120,16 +120,16 @@ impl<T: Model> Component for Select<T> {
         let props = ctx.props();
 
         html! {
-            <select
-                name={ctx.props().field_name.clone()}
-                autocomplete={props.autocomplete.clone()}
+            <input
+                id={self.field_name.clone()}
+                type="file"
+                name={self.field_name.clone()}
                 disabled={props.disabled}
+                accept={props.accept.clone()}
                 multiple={props.multiple}
                 class={self.class().to_string()}
-                oninput={ctx.link().callback(SelectMessage::OnInput)}
-            >
-            { for props.children.clone().iter() }
-            </select>
+                oninput={ctx.link().callback(FileMessage::OnInput)}
+            />
         }
     }
 }

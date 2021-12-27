@@ -15,12 +15,13 @@ categories = [ "web-programming" ]
 wasm-bindgen = "0.2"
 validator = "0.14.0"
 validator_derive = "0.14.0"
-# yew = "0.19"
 yew = {git = "https://github.com/yewstack/yew" } # Yew @ next
+gloo-console = "0.2"
 
 [dependencies.web-sys]
 version = "0.3"
 features = [
 "HtmlInputElement",
 "HtmlSelectElement",
+"HtmlTextAreaElement"
 ]

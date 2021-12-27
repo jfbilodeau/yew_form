@@ -36,14 +36,14 @@ impl<T: Model> FormState<T> {
         self.fields
             .iter()
             .find(|&f| f.field_name == name)
-            .unwrap_or_else(|| panic!("Field {} does not exist", name))
+            .expect(&format!("Field {} does not exist", name))
     }
 
     pub(crate) fn field_mut(&mut self, name: &str) -> &mut FormField {
         self.fields
             .iter_mut()
             .find(|f| f.field_name == name)
-            .unwrap_or_else(|| panic!("Field {} does not exist", name))
+            .expect(&format!("Field {} does not exist", name))
     }
 
     pub fn field_value(&self, field_name: &str) -> &str {
@@ -67,7 +67,7 @@ impl<T: Model> FormState<T> {
                 }
                 Err(e) => {
                     field.valid = false;
-                    field.message = e;
+                    field.message = String::from(e);
                 }
             }
         }
@@ -129,7 +129,7 @@ impl<T: Model> FormState<T> {
         errors: &ValidationErrors,
     ) {
         fn generate_field_name(prefix: &str, field_name: &str) -> String {
-            if prefix.is_empty() {
+            if prefix == "" {
                 String::from(field_name)
             } else {
                 format!("{}.{}", prefix, field_name)
