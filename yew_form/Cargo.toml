@@ -15,7 +15,7 @@ categories = [ "web-programming" ]
 wasm-bindgen = "0.2"
 validator = "0.14.0"
 validator_derive = "0.14.0"
-yew = {git = "https://github.com/yewstack/yew" } # Yew @ next
+yew = "0.19.3"
 gloo-console = "0.2"
 
 [dependencies.web-sys]
