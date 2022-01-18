@@ -6,8 +6,12 @@ use wasm_bindgen::UnwrapThrowExt;
 use web_sys::Event;
 use web_sys::HtmlInputElement;
 use web_sys::InputEvent;
+<<<<<<< HEAD:yew_form/src/field.rs
 use yew::{html, Callback, Component, Context, Html, Properties};
 >>>>>>> fa67514a4897880b89e3e13161797e6877d3f50b
+=======
+use yew::{classes, html, Callback, Classes, Component, Context, Html, Properties};
+>>>>>>> 4b9fabffb63393ec7626a4477fd36de12a07fac9:yew_form/src/components/field.rs
 
 use crate::form::Form;
 use crate::Model;
@@ -34,12 +38,13 @@ pub struct FieldProperties<T: Model> {
     pub form: Form<T>,
     #[prop_or_else(String::new)]
     pub placeholder: String,
-    #[prop_or_else(|| { "form-control".to_owned() })]
-    pub class: String,
-    #[prop_or_else(|| { "is-invalid".to_owned() })]
-    pub class_invalid: String,
-    #[prop_or_else(|| { "is-valid".to_owned() })]
-    pub class_valid: String,
+    pub disabled: Option<bool>,
+    #[prop_or_else(|| { classes!("form-control") })]
+    pub class: Classes,
+    #[prop_or_else(|| { classes!("is-invalid") })]
+    pub class_invalid: Classes,
+    #[prop_or_else(|| { classes!("is-valid") })]
+    pub class_valid: Classes,
     #[prop_or_else(Callback::noop)]
     pub oninput: Callback<InputEvent>,
 }
@@ -50,9 +55,9 @@ pub struct Field<T: Model> {
     pub field_name: String,
     pub form: Form<T>,
     pub placeholder: String,
-    pub class: String,
-    pub class_invalid: String,
-    pub class_valid: String,
+    pub class: Classes,
+    pub class_invalid: Classes,
+    pub class_valid: Classes,
 }
 
 impl<T: Model> Field<T> {
@@ -60,18 +65,22 @@ impl<T: Model> Field<T> {
         &self.field_name
     }
 
+<<<<<<< HEAD:yew_form/src/field.rs
 <<<<<<< HEAD
     pub fn class(&self) -> &'static str {
 =======
     pub fn class(&self) -> String {
 >>>>>>> fa67514a4897880b89e3e13161797e6877d3f50b
+=======
+    pub fn class(&self) -> Classes {
+>>>>>>> 4b9fabffb63393ec7626a4477fd36de12a07fac9:yew_form/src/components/field.rs
         let s = self.form.state();
         let field = s.field(&self.field_name);
 
         if field.dirty && field.valid {
-            format!("{} {}", self.class, self.class_valid)
+            classes!(self.class.clone(), self.class_valid.clone())
         } else if field.dirty {
-            format!("{} {}", self.class, self.class_invalid)
+            classes!(self.class.clone(), self.class_invalid.clone())
         } else {
             self.class.to_owned()
         }
@@ -96,7 +105,6 @@ impl<T: Model> Field<T> {
         let event: Event = e.dyn_into().unwrap_throw();
         let event_target = event.target().unwrap_throw();
         let target: HtmlInputElement = event_target.dyn_into().unwrap_throw();
-        web_sys::console::log_1(&target.value().into());
         target.value()
     }
 }
@@ -145,6 +153,7 @@ impl<T: Model> Component for Field<T> {
     fn view(&self, ctx: &Context<Self>) -> Html {
         html! {
             <input
+<<<<<<< HEAD:yew_form/src/field.rs
 <<<<<<< HEAD
                 class=self.class()
                 id=self.field_name.clone()
@@ -161,6 +170,16 @@ impl<T: Model> Component for Field<T> {
                 value={ self.form.field_value(&self.field_name) }
                 oninput={ ctx.link().callback(FieldMessage::OnInput )}
 >>>>>>> fa67514a4897880b89e3e13161797e6877d3f50b
+=======
+                class={self.class().to_string()}
+                id={self.field_name.clone()}
+                type={self.input_type.clone()}
+                autocomplete={self.autocomplete.clone()}
+                placeholder={self.placeholder.clone()}
+                value={self.form.field_value(&self.field_name)}
+                oninput={ctx.link().callback(FieldMessage::OnInput )}
+                disabled={ctx.props().disabled.unwrap_or_default()}
+>>>>>>> 4b9fabffb63393ec7626a4477fd36de12a07fac9:yew_form/src/components/field.rs
             />
         }
     }
