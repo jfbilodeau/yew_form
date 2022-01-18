@@ -7,10 +7,10 @@ extern crate yew_form;
 #[macro_use]
 extern crate yew_form_derive;
 
-use wasm_bindgen::prelude::*;
 use regex::Regex;
 use validator::{Validate, ValidationError};
-use yew::{MouseEvent, Component, ComponentLink, Html, html, InputData};
+use wasm_bindgen::prelude::*;
+use yew::{html, Component, Context, Html, InputEvent, MouseEvent};
 
 use yew_form::{CheckBox, Field, Form};
 
@@ -28,11 +28,11 @@ fn must_be_true(value: &bool) -> Result<(), ValidationError> {
 
 #[derive(Model, Validate, PartialEq, Clone)]
 struct Address {
-    #[validate(length(min = 1, message="Street is required"))]
+    #[validate(length(min = 1, message = "Street is required"))]
     street: String,
-    #[validate(length(min = 1, message="City name is required"))]
+    #[validate(length(min = 1, message = "City name is required"))]
     city: String,
-    #[validate(regex(path="PROVINCE_RE", message="Enter 2 digit province code"))]
+    #[validate(regex(path = "PROVINCE_RE", message = "Enter 2 digit province code"))]
     province: String,
     postal_code: String,
     country: String,
@@ -40,9 +40,9 @@ struct Address {
 
 #[derive(Model, Validate, PartialEq, Clone)]
 struct Registration {
-    #[validate(length(min = 1, message="First name is required"))]
+    #[validate(length(min = 1, message = "First name is required"))]
     first_name: String,
-    #[validate(length(min = 1, message="Last name is required"))]
+    #[validate(length(min = 1, message = "Last name is required"))]
     last_name: String,
     quantity: u32,
     price: f64,
@@ -64,7 +64,6 @@ enum AppMessage {
 }
 
 struct App {
-    link: ComponentLink<Self>,
     form: Form<Registration>,
     submitted: bool,
 }
@@ -73,7 +72,7 @@ impl Component for App {
     type Message = AppMessage;
     type Properties = ();
 
-    fn create(_props: Self::Properties, link: ComponentLink<Self>) -> Self {
+    fn create(_ctx: &Context<Self>) -> Self {
         // Create model initial state
         let model = Registration {
             first_name: String::from("J-F"),
@@ -91,13 +90,12 @@ impl Component for App {
         };
 
         Self {
-            link,
             form: Form::new(model),
             submitted: false,
         }
     }
 
-    fn update(&mut self, msg: Self::Message) -> bool {
+    fn update(&mut self, _ctx: &Context<Self>, msg: Self::Message) -> bool {
         match msg {
             AppMessage::Update => true, // Force update
             AppMessage::Submit => {
@@ -109,101 +107,117 @@ impl Component for App {
         }
     }
 
-    fn change(&mut self, _props: Self::Properties) -> bool {
+    fn changed(&mut self, _ctx: &Context<Self>) -> bool {
         true
     }
 
-    fn view(&self) -> Html {
+    fn view(&self, ctx: &Context<Self>) -> Html {
+        let cb = ctx.link().callback(|_: InputEvent| AppMessage::Update);
+        let form = &self.form;
         html! {
             <div class="container-sm">
                 <h1>{"Yew Form Example"}</h1>
-                <p>{format!("Hello, {} {} and welcome to Yew Form!", self.form.model().first_name, self.form.model().last_name)}</p>
+                <p>{format!("Hello, {} {} and welcome to Yew Form!",
+                        self.form.field_value("first_name"),
+                        self.form.field_value("last_name"))}</p>
                 <form>
                     // TODO: support additional attributes
-                    // TODO: Remove hard-coded Bootstrap classes
                     // TODO: Update form without needing oninput
                     <div class="form-group">
                         <label for="first_name">{"First Name: "}</label>
-                        <Field<Registration> form=&self.form field_name="first_name" oninput=self.link.callback(|_: InputData| AppMessage::Update) />
+                        <Field<Registration>
+                                form={ form }
+                                autocomplete="given_name"
+                                field_name="first_name"
+                                class="form-control blue foo bar"
+                                class_invalid="is-invalid very-wrong"
+                                class_valid="is-valid green"
+                                oninput={ cb.clone() }
+                        />
                         <div class="invalid-feedback">
-                            {&self.form.field_message("first_name")}
+                            {form.field_message("first_name")}
                         </div>
                     </div>
                     <div class="form-group">
                         <label for="last_name">{"Last Name: "}</label>
-                        <Field<Registration> form=&self.form field_name="last_name" oninput=self.link.callback(|_: InputData| AppMessage::Update) />
+                        <Field<Registration> form={ form } field_name="last_name" oninput={ cb.clone() } />
                         <div class="invalid-feedback">
-                            {&self.form.field_message("last_name")}
+                            {form.field_message("last_name")}
                         </div>
                     </div>
                     <div class="form-group">
                         <label for="last_name">{"Quantity: "}</label>
-                        <Field<Registration> form=&self.form field_name="quantity" oninput=self.link.callback(|_: InputData| AppMessage::Update) />
+                        <Field<Registration> form={ form } field_name="quantity" oninput={ cb.clone() } />
                         <div class="invalid-feedback">
-                            {&self.form.field_message("quantity")}
+                            {form.field_message("quantity")}
                         </div>
                     </div>
                     <div class="form-group">
                         <label for="last_name">{"Price: "}</label>
-                        <Field<Registration> form=&self.form field_name="price" oninput=self.link.callback(|_: InputData| AppMessage::Update) />
+                        <Field<Registration> form={ form } field_name="price" oninput={ cb.clone() } />
                         <div class="invalid-feedback">
-                            {&self.form.field_message("price")}
+                            {form.field_message("price")}
                         </div>
                     </div>
                     <div>
-                        {"Total: "}{format!("{:.2}", self.form.model().total())}
+                        {"Total: "}{format!("{:.2}", form.model().total())}
                     </div>
                     <div class="form-group">
                         <label for="address.street">{"Street: "}</label>
-                        <Field<Registration> form=&self.form field_name="address.street" oninput=self.link.callback(|_: InputData| AppMessage::Update) />
+                        <Field<Registration> form={ form } field_name="address.street" oninput={ cb.clone() } />
                         <div class="invalid-feedback">
-                            {&self.form.field_message("address.street")}
+                            {form.field_message("address.street")}
                         </div>
                     </div>
                     <div class="form-group">
                         <label for="address.city">{"City: "}</label>
-                        <Field<Registration> form=&self.form field_name="address.city" oninput=self.link.callback(|_: InputData| AppMessage::Update) />
+                        <Field<Registration> form={ form } field_name="address.city" oninput={ cb.clone() } />
                         <div class="invalid-feedback">
-                            {&self.form.field_message("address.city")}
+                            {form.field_message("address.city")}
                         </div>
                     </div>
                     <div class="form-group">
                         <label for="address.province">{"Province: "}</label>
-                        <Field<Registration> form=&self.form field_name="address.province" oninput=self.link.callback(|_: InputData| AppMessage::Update) />
+                        <Field<Registration> form={ form } field_name="address.province" oninput={ cb.clone() } />
                         <div class="invalid-feedback">
-                            {&self.form.field_message("address.province")}
+                            {form.field_message("address.province")}
                         </div>
                     </div>
                     <div class="form-group">
                         <label for="address.country">{"Country (optional): "}</label>
-                        <Field<Registration> form=&self.form field_name="address.country" oninput=self.link.callback(|_: InputData| AppMessage::Update) />
+                        <Field<Registration> form={ form } field_name="address.country" oninput={ cb.clone() } />
                         <div class="invalid-feedback">
-                            {&self.form.field_message("address.country")}
+                            {form.field_message("address.country")}
                         </div>
                     </div>
                     <div class="form-group">
                         <CheckBox<Registration>
                             field_name="accept_terms"
-                            form=&self.form
+                            form={ form }
                         />
                         <label class="form-check-label" for="accept_terms">{"Accept Terms and Conditions: "}</label>
                         <div class="invalid-feedback">
-                          {&self.form.field_message("accept_terms")}
+                          {form.field_message("accept_terms")}
                         </div>
                     </div>
                     <div class="form-group">
-                        <button type="button" onclick=self.link.callback(|e: MouseEvent| {e.prevent_default(); AppMessage::Submit})>{"Submit"}</button>
+                        <button
+                            type="button"
+                            onclick={ ctx.link().callback(|e: MouseEvent| {e.prevent_default(); AppMessage::Submit}) }
+                        >
+                            {"Submit"}
+                        </button>
                     </div>
                 </form>
-                <div hidden=!self.submitted>
+                <div hidden={ !self.submitted }>
                     <h2>{"Form data"}</h2>
-                    <p>{"First Name: "}{&self.form.model().first_name}</p>
-                    <p>{"Last Name: "}{&self.form.model().last_name}</p>
-                    <p>{"Street: "}{&self.form.model().address.street}</p>
-                    <p>{"City: "}{&self.form.model().address.city}</p>
-                    <p>{"Province: "}{&self.form.model().address.province}</p>
-                    <p>{"Country: "}{&self.form.model().address.country}</p>
-                    <p>{"Accepted Terms: "}{self.form.model().accept_terms}</p>
+                    <p>{"First Name: "}{&form.model().first_name}</p>
+                    <p>{"Last Name: "}{&form.model().last_name}</p>
+                    <p>{"Street: "}{&form.model().address.street}</p>
+                    <p>{"City: "}{&form.model().address.city}</p>
+                    <p>{"Province: "}{&form.model().address.province}</p>
+                    <p>{"Country: "}{&form.model().address.country}</p>
+                    <p>{"Accepted Terms: "}{form.model().accept_terms}</p>
                 </div>
             </div>
         }
@@ -214,7 +228,6 @@ impl Component for App {
 pub fn run_app() {
     yew::start_app::<App>();
 }
-
 
 #[cfg(test)]
 mod tests {
@@ -228,7 +241,7 @@ mod tests {
             city: "city_i".to_string(),
             province: "prov_i".to_string(),
             postal_code: "po_i".to_string(),
-            country: "country_i".to_string()
+            country: "country_i".to_string(),
         };
 
         let mut fields = vec![];
@@ -237,7 +250,7 @@ mod tests {
         assert_eq!(fields.len(), 5);
         assert!(fields.contains(&String::from("street")));
 
-        assert_eq!(address.value("street"), String::from(address.street.clone()));
+        assert_eq!(address.value("street"), address.street.clone());
 
         assert!(address.set_value("street", "street_o").is_ok());
 
@@ -256,9 +269,9 @@ mod tests {
                 city: "city_i".to_string(),
                 province: "prov_i".to_string(),
                 postal_code: "po_i".to_string(),
-                country: "country_i".to_string()
+                country: "country_i".to_string(),
             },
-            accept_terms: false
+            accept_terms: false,
         };
 
         let mut fields = vec![];
@@ -277,12 +290,17 @@ mod tests {
         assert!(result.is_ok());
         assert_eq!(&registration.value("quantity"), "12");
 
+        assert_eq!(
+            registration.value("address.street"),
+            registration.address.street.clone()
+        );
 
-        assert_eq!(registration.value("address.street"), String::from(registration.address.street.clone()));
+        assert!(registration.set_value("address.street", "street_o").is_ok());
 
-        registration.set_value("address.street", "street_o");
-
-        assert_eq!(registration.address.value("street"), String::from("street_o"));
+        assert_eq!(
+            registration.address.value("street"),
+            String::from("street_o")
+        );
     }
 
     #[test]
@@ -293,7 +311,7 @@ mod tests {
             city: "city_i".to_string(),
             province: "prov_i".to_string(),
             postal_code: "po_i".to_string(),
-            country: "country_i".to_string()
+            country: "country_i".to_string(),
         };
 
         address.value("not_exist");
