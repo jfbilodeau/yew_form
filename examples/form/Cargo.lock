@@ -616,6 +616,7 @@ dependencies = [
 name = "yew_form"
 version = "0.1.8"
 dependencies = [
+ "gloo-console",
  "validator",
  "validator_derive",
  "wasm-bindgen",

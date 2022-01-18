@@ -13,6 +13,6 @@ regex = "1"
 validator = "0.14"
 validator_derive = "0.14"
 wasm-bindgen = "0.2"
-yew = "0.19"
+yew = "0.19.3"
 yew_form =  { version = "0.1", path = "../../yew_form"}
 yew_form_derive =  { version = "0.1", path = "../../yew_form_derive"}
