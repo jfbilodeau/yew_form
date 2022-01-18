@@ -1073,5 +1073,6 @@ impl Component for App {
 }
 
 fn main() {
+    h
     yew::start_app::<App>();
 }

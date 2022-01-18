@@ -13,11 +13,11 @@ Supports:
 Cargo.toml:
 ```toml
 [dependencies]
-validator = "0.10"
-validator_derive = "0.10"
-yew = "0.12"
+validator = "0.14"
+validator_derive = "0.14"
+yew = "0.18"
 yew_form = "0.1"
-yew_form_derive = "0.1.4"
+yew_form_derive = "0.1"
 ```
 main.rs:
 ```rust
@@ -92,9 +92,20 @@ fn create(_props: Self::Properties, link: ComponentLink<Self>) -> Self {
 
 Fields can then be added to the form as follows:
 ```html
-<Field<Registration> form=&self.form field_name="first_name" oninput=self.link.callback(|_: InputData| AppMessage::Update) />
-...
-<Field<Registration> form=&self.form field_name="address.street" oninput=self.link.callback(|_: InputData| AppMessage::Update) />
+<Field<Registration> 
+    form=&self.form 
+    field_name="first_name"
+    autocomplete="given-name"
+    oninput=self.link.callback(|_: InputData| AppMessage::Update) />
+
+<!-- here we use custom css classes -->
+<Field<Registration> 
+    form=&self.form 
+    field_name="address.street"
+    class="form-control"
+    class_invalid="is-invalid red-border"
+    class_valid="is-valid green-border"
+    oninput=self.link.callback(|_: InputData| AppMessage::Update) />
 ...
 <CheckBox<Registration> field_name="accept_terms" form=&self.form />
 ```
@@ -115,12 +126,17 @@ Todo/Wish List:
 - [X] Make `oninput` optional
 - [ ] Make Yew update the view when `Field` is updated
 - [ ] Need to add additional HTML attribute to `Field`
-- [ ] Remove hard-coded Bootstrap styles
+- [X] Remove hard-coded Bootstrap styles
 - [X] Add support for additional types such as `i32`
 - [ ] Support `Vec<T>`
 - [X] Support Rust Stable
 
 ## Change Log
+
+### 0.1.8
+- Remove hardcoded Bootstrap css classes
+- Fix `examples/form`
+- Add `autocomplete` attribute
 
 ### 0.1.7
 - Remove `#![feature(get_mut_unchecked)]` from code (Thanks [L0g4n](https://github.com/L0g4n))

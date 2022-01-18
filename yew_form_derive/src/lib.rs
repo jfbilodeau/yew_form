@@ -72,7 +72,7 @@ pub fn derive_model(input: TokenStream) -> TokenStream {
                     #(
                     #field_names => self.#field_idents.value(suffix),
                     )*
-                    _ => panic!(format!("Field {} does not exist in {}", field_path, stringify!(#struct_name)))
+                    _ => panic!("Field {} does not exist in {}", field_path, stringify!(#struct_name))
                 }
             }
 
@@ -83,7 +83,7 @@ pub fn derive_model(input: TokenStream) -> TokenStream {
                     #(
                     #field_names => self.#field_idents.set_value(suffix, value),
                     )*
-                    _ => panic!(format!("Field {} does not exist in {}", field_path, stringify!(#struct_name)))
+                    _ => panic!("Field {} does not exist in {}", field_path, stringify!(#struct_name))
                 }
             }
         }

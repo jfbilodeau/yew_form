@@ -5,7 +5,7 @@ To run:
 Install the following if desired:
 ```bash
 cargo install wasm-pack
-cargo +nightly install miniserve
+cargo install miniserve
 ```
 
 Compile and run:
