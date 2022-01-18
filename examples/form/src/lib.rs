@@ -126,14 +126,22 @@ impl Component for App {
                     <div class="form-group">
                         <label for="first_name">{"First Name: "}</label>
                         <Field<Registration>
+<<<<<<< HEAD
                                 form={ form }
                                 autocomplete="given_name"
+=======
+                                form=form
+>>>>>>> 0ab668b7f3fb9ba13e1e0d4d97bee619280f3a3d
                                 field_name="first_name"
                                 class="form-control blue foo bar"
                                 class_invalid="is-invalid very-wrong"
                                 class_valid="is-valid green"
+<<<<<<< HEAD
                                 oninput={ cb.clone() }
                         />
+=======
+                                oninput=cb.clone() />
+>>>>>>> 0ab668b7f3fb9ba13e1e0d4d97bee619280f3a3d
                         <div class="invalid-feedback">
                             {form.field_message("first_name")}
                         </div>
