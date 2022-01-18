@@ -26,6 +26,7 @@ pub struct FieldProperties<T: Model> {
     pub form: Form<T>,
     #[prop_or_else(String::new)]
     pub placeholder: String,
+    pub disabled: Option<bool>,
     #[prop_or_else(|| { classes!("form-control") })]
     pub class: Classes,
     #[prop_or_else(|| { classes!("is-invalid") })]
@@ -139,6 +140,7 @@ impl<T: Model> Component for Field<T> {
                 placeholder={self.placeholder.clone()}
                 value={self.form.field_value(&self.field_name)}
                 oninput={ctx.link().callback(FieldMessage::OnInput )}
+                disabled={ctx.props().disabled.unwrap_or_default()}
             />
         }
     }
