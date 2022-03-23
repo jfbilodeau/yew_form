@@ -1,16 +1,21 @@
 [![License:MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT) [![License:Apache](https://img.shields.io/badge/License-Apache-yellow.svg)](https://opensource.org/licenses/Apache-2.0)
+
 # Yew Form
+
 Bringing MVC to Yew! A set of mildly opinionated Yew component to map and validate a model to a HTML form.
 
 [Live demo](http://chronogears.com/yew-form/)
 
 Supports:
-- 2-way Binding to struct (with support for nested structs)
-- Validation ([using Keats Validator](https://github.com/Keats/validator))
-- Only `String` and `bool` fields are supported presently. More to come
+
+-   2-way Binding to struct (with support for nested structs)
+-   Validation ([using Keats Validator](https://github.com/Keats/validator))
+-   Only `String` and `bool` fields are supported presently. More to come
 
 ## Usage
+
 Cargo.toml:
+
 ```toml
 [dependencies]
 validator = "0.14"
@@ -19,7 +24,9 @@ yew = "0.18"
 yew_form = "0.1"
 yew_form_derive = "0.1"
 ```
+
 main.rs:
+
 ```rust
 #[macro_use]
 extern crate validator_derive;
@@ -29,7 +36,9 @@ extern crate yew_form_derive;
 ```
 
 ## Example
+
 Consider the following model:
+
 ```rust
 #[derive(Model, Validate, PartialEq, Clone)]
 struct Address {
@@ -68,6 +77,7 @@ struct App {
 ```
 
 For now, the `Form` needs to be instantiated as follows:
+
 ```rust
 fn create(_props: Self::Properties, link: ComponentLink<Self>) -> Self {
     // Create model initial state
@@ -91,28 +101,25 @@ fn create(_props: Self::Properties, link: ComponentLink<Self>) -> Self {
 ```
 
 Fields can then be added to the form as follows:
-```html
-<Field<Registration> 
-    form=&self.form 
-<<<<<<< HEAD
-    field_name="first_name"
-    autocomplete="given-name"
-=======
-    field_name="first_name" 
->>>>>>> 0ab668b7f3fb9ba13e1e0d4d97bee619280f3a3d
-    oninput=self.link.callback(|_: InputData| AppMessage::Update) />
 
-<!-- here we use custom css classes -->
-<Field<Registration> 
-    form=&self.form 
-    field_name="address.street"
-    class="form-control"
-    class_invalid="is-invalid red-border"
-    class_valid="is-valid green-border"
-    oninput=self.link.callback(|_: InputData| AppMessage::Update) />
-...
-<CheckBox<Registration> field_name="accept_terms" form=&self.form />
+```html
+<Field<Registration>
+    form=&self.form field_name="first_name" oninput=self.link.callback(|_:
+    InputData| AppMessage::Update) />
+
+    <!-- here we use custom css classes -->
+    <Field<Registration>
+        form=&self.form field_name="address.street" class="form-control"
+        class_invalid="is-invalid red-border" class_valid="is-valid
+        green-border" oninput=self.link.callback(|_: InputData|
+        AppMessage::Update) /> ...
+        <CheckBox<Registration>
+            field_name="accept_terms" form=&self.form /></CheckBox<Registration
+        ></Field<Registration
+    ></Field<Registration
+>
 ```
+
 The `Field` component takes care of two way binding between `struct Registration` and the HTML `<input>`
 
 Validation is done automatically when the user edits the form or programmatically.
@@ -124,47 +131,56 @@ if self.form.validate() {
 ```
 
 Todo/Wish List:
-- [ ] Add documentation (In progress)
-- [ ] ~~Remove clone requirement from model~~
-- [X] Add `derive` for model to remove need for `vec!` of fields
-- [X] Make `oninput` optional
-- [ ] Make Yew update the view when `Field` is updated
-- [ ] Need to add additional HTML attribute to `Field`
-- [X] Remove hard-coded Bootstrap styles
-- [X] Add support for additional types such as `i32`
-- [ ] Support `Vec<T>`
-- [X] Support Rust Stable
+
+-   [ ] Add documentation (In progress)
+-   [ ] ~~Remove clone requirement from model~~
+-   [x] Add `derive` for model to remove need for `vec!` of fields
+-   [x] Make `oninput` optional
+-   [ ] Make Yew update the view when `Field` is updated
+-   [ ] Need to add additional HTML attribute to `Field`
+-   [x] Remove hard-coded Bootstrap styles
+-   [x] Add support for additional types such as `i32`
+-   [ ] Support `Vec<T>`
+-   [x] Support Rust Stable
 
 ## Change Log
 
 ### 0.1.8
-- Remove hardcoded Bootstrap css classes
-- Fix `examples/form`
-- Add `autocomplete` attribute
+
+-   Remove hardcoded Bootstrap css classes
+-   Fix `examples/form`
+-   Add `autocomplete` attribute
 
 ### 0.1.7
-- Remove `#![feature(get_mut_unchecked)]` from code (Thanks [L0g4n](https://github.com/L0g4n))
+
+-   Remove `#![feature(get_mut_unchecked)]` from code (Thanks [L0g4n](https://github.com/L0g4n))
 
 ### 0.1.6
-- Removed unsafe code
-- Updated yew_form version in documentation
+
+-   Removed unsafe code
+-   Updated yew_form version in documentation
 
 ### 0.1.5
-- Updated to Yew 0.17
+
+-   Updated to Yew 0.17
 
 ### 0.1.4
-- Added blanket implementation for FieldValue to support `i32`, `bool`, etc...
+
+-   Added blanket implementation for FieldValue to support `i32`, `bool`, etc...
 
 ### 0.1.3
+
 **BREAKING CHANGES**
-- Added `#[derive(Model)]`
-- No need to manually pass a vector of fields to `Form::new()`
+
+-   Added `#[derive(Model)]`
+-   No need to manually pass a vector of fields to `Form::new()`
 
 ### 0.1.2
-- Added CheckBox
+
+-   Added CheckBox
 
 ### 0.1.1
-- Make `Field::oninput` optional
 
+-   Make `Field::oninput` optional
 
 (Made with ❤️ with Rust)

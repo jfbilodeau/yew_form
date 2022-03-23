@@ -1,27 +1,15 @@
-<<<<<<< HEAD
-use yew::{html, Callback, Component, ComponentLink, Html, InputData, Properties, ShouldRender};
-=======
 use wasm_bindgen::JsCast;
 use wasm_bindgen::UnwrapThrowExt;
 use web_sys::Event;
 use web_sys::HtmlInputElement;
 use web_sys::InputEvent;
-<<<<<<< HEAD:yew_form/src/field.rs
-use yew::{html, Callback, Component, Context, Html, Properties};
->>>>>>> fa67514a4897880b89e3e13161797e6877d3f50b
-=======
 use yew::{classes, html, Callback, Classes, Component, Context, Html, Properties};
->>>>>>> 4b9fabffb63393ec7626a4477fd36de12a07fac9:yew_form/src/components/field.rs
 
 use crate::form::Form;
 use crate::Model;
 
 pub enum FieldMessage {
-<<<<<<< HEAD
-    OnInput(InputData),
-=======
     OnInput(InputEvent),
->>>>>>> fa67514a4897880b89e3e13161797e6877d3f50b
 }
 
 fn default_text() -> String {
@@ -65,15 +53,7 @@ impl<T: Model> Field<T> {
         &self.field_name
     }
 
-<<<<<<< HEAD:yew_form/src/field.rs
-<<<<<<< HEAD
-    pub fn class(&self) -> &'static str {
-=======
-    pub fn class(&self) -> String {
->>>>>>> fa67514a4897880b89e3e13161797e6877d3f50b
-=======
     pub fn class(&self) -> Classes {
->>>>>>> 4b9fabffb63393ec7626a4477fd36de12a07fac9:yew_form/src/components/field.rs
         let s = self.form.state();
         let field = s.field(&self.field_name);
 
@@ -153,24 +133,6 @@ impl<T: Model> Component for Field<T> {
     fn view(&self, ctx: &Context<Self>) -> Html {
         html! {
             <input
-<<<<<<< HEAD:yew_form/src/field.rs
-<<<<<<< HEAD
-                class=self.class()
-                id=self.field_name.clone()
-                type=self.input_type.clone()
-                placeholder=self.placeholder.clone()
-                value=self.form.field_value(&self.field_name)
-                oninput=self.link.callback(|e: InputData| FieldMessage::OnInput(e))
-=======
-                class={ self.class().to_string() }
-                id={ self.field_name.clone() }
-                type={ self.input_type.clone() }
-                placeholder={ self.placeholder.clone() }
-                autocomplete={ self.autocomplete.clone() }
-                value={ self.form.field_value(&self.field_name) }
-                oninput={ ctx.link().callback(FieldMessage::OnInput )}
->>>>>>> fa67514a4897880b89e3e13161797e6877d3f50b
-=======
                 class={self.class().to_string()}
                 id={self.field_name.clone()}
                 type={self.input_type.clone()}
@@ -179,7 +141,6 @@ impl<T: Model> Component for Field<T> {
                 value={self.form.field_value(&self.field_name)}
                 oninput={ctx.link().callback(FieldMessage::OnInput )}
                 disabled={ctx.props().disabled.unwrap_or_default()}
->>>>>>> 4b9fabffb63393ec7626a4477fd36de12a07fac9:yew_form/src/components/field.rs
             />
         }
     }

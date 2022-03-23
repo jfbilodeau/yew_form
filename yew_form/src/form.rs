@@ -1,9 +1,6 @@
 use std::cell::{Ref, RefCell, RefMut};
 use std::rc::Rc;
-<<<<<<< HEAD
-=======
 use yew::html::ImplicitClone;
->>>>>>> fa67514a4897880b89e3e13161797e6877d3f50b
 
 use crate::form_state::FormState;
 use crate::Model;
@@ -62,12 +59,7 @@ impl<T: Model> Form<T> {
 
 impl<T: Model> PartialEq for Form<T> {
     fn eq(&self, other: &Self) -> bool {
-<<<<<<< HEAD
-        Rc::ptr_eq(&self.state, &other.state)
-            || self.state.borrow().model == other.state.borrow().model
-=======
         Rc::ptr_eq(&self.state, &other.state) || self.state().model == other.state().model
->>>>>>> fa67514a4897880b89e3e13161797e6877d3f50b
     }
 
     fn ne(&self, other: &Self) -> bool {

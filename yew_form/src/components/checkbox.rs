@@ -1,9 +1,5 @@
 use crate::{Form, Model};
-<<<<<<< HEAD
-use yew::{html, Callback, Component, ComponentLink, Html, Properties};
-=======
 use yew::{html, Callback, Component, Context, Html, Properties};
->>>>>>> fa67514a4897880b89e3e13161797e6877d3f50b
 
 pub enum CheckBoxMessage {
     OnToggle,
@@ -41,15 +37,10 @@ impl<T: Model + Clone> Component for CheckBox<T> {
     type Message = CheckBoxMessage;
     type Properties = CheckBoxProperties<T>;
 
-<<<<<<< HEAD
-    fn create(props: Self::Properties, link: ComponentLink<Self>) -> Self {
-        Self { link, props }
-=======
     fn create(ctx: &yew::Context<Self>) -> Self {
         Self {
             props: ctx.props().clone(),
         }
->>>>>>> fa67514a4897880b89e3e13161797e6877d3f50b
     }
 
     fn update(&mut self, ctx: &yew::Context<Self>, msg: Self::Message) -> bool {
@@ -71,15 +62,9 @@ impl<T: Model + Clone> Component for CheckBox<T> {
         html! {
             <input
                 type="checkbox"
-<<<<<<< HEAD
-                value=self.props.field_name.clone()
-                onclick=self.link.callback(|_e| CheckBoxMessage::OnToggle)
-                checked=self.value()
-=======
                 value={ self.props.field_name.clone() }
                 onclick={ ctx.link().callback(|_| CheckBoxMessage::OnToggle)}
                 checked={ self.value() }
->>>>>>> fa67514a4897880b89e3e13161797e6877d3f50b
                 class="form-check-input form-input"
              />
         }

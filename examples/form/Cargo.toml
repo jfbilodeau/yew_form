@@ -8,11 +8,11 @@ edition = "2018"
 crate-type = ["cdylib", "rlib"]
 
 [dependencies]
-lazy_static = "1.4"
+lazy_static = "1.4.0"
 regex = "1"
-validator = "0.14"
-validator_derive = "0.14"
+validator = "0.14.0"
+validator_derive = "0.14.0"
 wasm-bindgen = "0.2"
 yew = "0.19.3"
-yew_form =  { version = "0.1", path = "../../yew_form"}
-yew_form_derive =  { version = "0.1", path = "../../yew_form_derive"}
+yew_form =  { path = "../../yew_form"}
+yew_form_derive =  { path = "../../yew_form_derive"}
